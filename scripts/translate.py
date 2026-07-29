@@ -3,12 +3,22 @@
 譯文存在獨立的 data/translations.json（原文 -> 譯文），build_data.py 再把它
 併進網站資料。這樣拆開的好處是：重建資料不會弄丟翻譯，翻譯也可以隨時中斷續跑。
 
-用法：
-    set GROQ_API_KEY=你的金鑰        (PowerShell: $env:GROQ_API_KEY="...")
-    python scripts/translate.py           翻全部
+用法（PowerShell）：
+    $env:GROQ_API_KEY="你的金鑰"
     python scripts/translate.py --limit 50   先翻 50 條試水溫
+    python scripts/translate.py              翻全部
 
 金鑰請用環境變數，不要寫進檔案裡。
+
+服務商可換，兩家都是 OpenAI 相容格式，模型會自動偵測：
+
+    Groq   （預設）免費層每日 token 上限低，全站要分約 10 天跑完
+    Gemini  沒有每日 token 上限、只限 1500 次請求／天，而全站只需 784 次，
+            約 80 分鐘就能跑完。改成這樣即可：
+              $env:GROQ_BASE="https://generativelanguage.googleapis.com/v1beta/openai"
+              $env:GROQ_API_KEY="你的 Gemini 金鑰"
+
+不論用哪家，撞到當日配額都會自動存檔收工，隔天重跑會從斷點接續。
 """
 
 import argparse
@@ -25,8 +35,22 @@ ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw" / "plonkit"
 STORE = ROOT / "data" / "translations.json"
 
-API = os.environ.get("GROQ_URL", "https://api.groq.com/openai/v1/chat/completions")
-MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+BASE = os.environ.get("GROQ_BASE", "https://api.groq.com/openai/v1")
+API = BASE + "/chat/completions"
+
+# 服務商會汰換模型（llama-3.3-70b-versatile 已於 2026-06 棄用），所以不寫死：
+# 啟動時查一次可用清單，照偏好順序挑第一個存在的。
+# 清單同時涵蓋 Groq 與 Gemini，換服務商只要改 GROQ_BASE。
+MODEL_PREFS = [
+    "gemini-2.5-flash",
+    "gemini-flash-latest",
+    "openai/gpt-oss-120b",
+    "qwen/qwen3.6-27b",
+    "openai/gpt-oss-20b",
+    "llama-3.3-70b-versatile",
+]
+MODEL = os.environ.get("GROQ_MODEL", "")
+
 BATCH = 10          # 一次送幾條，太多容易讓模型漏譯或亂了順序
 MAX_CHARS = 4000    # 單批原文字元上限，避免撞到 TPM
 
@@ -85,9 +109,41 @@ def save_store(store):
     STORE.write_text(json.dumps(store, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
-def call_groq(key, batch):
+def pick_model(key):
+    """查一次帳號可用的模型，照 MODEL_PREFS 挑，避免寫死的名字被官方下架"""
+    if MODEL:
+        return MODEL
+    try:
+        r = requests.get(BASE + "/models",
+                         headers={"Authorization": f"Bearer {key}"}, timeout=30)
+        ids = {m["id"] for m in r.json().get("data", [])} if r.status_code == 200 else set()
+    except requests.RequestException:
+        ids = set()
+    for m in MODEL_PREFS:
+        if m in ids:
+            return m
+    if ids:
+        # 偏好清單全不在，就挑一個看起來像指令模型的
+        for m in sorted(ids):
+            if "whisper" not in m and "guard" not in m and "tts" not in m:
+                return m
+    return MODEL_PREFS[0]
+
+
+def show_limits(r):
+    """把剩餘額度印出來，免費層每日上限會先撞到，要讓使用者看得見"""
+    h = r.headers
+    parts = []
+    for k, label in (("x-ratelimit-remaining-tokens", "本分鐘剩餘 token"),
+                     ("x-ratelimit-remaining-requests", "今日剩餘請求")):
+        if h.get(k):
+            parts.append(f"{label} {h[k]}")
+    return "，".join(parts)
+
+
+def call_groq(key, batch, model):
     body = {
-        "model": MODEL,
+        "model": model,
         "messages": [
             {"role": "system", "content": SYSTEM},
             {"role": "user", "content": json.dumps(batch, ensure_ascii=False)},
@@ -105,14 +161,21 @@ def call_groq(key, batch):
             continue
 
         if r.status_code == 429:
-            wait = int(r.headers.get("retry-after", 0)) or 20 * (attempt + 1)
-            print(f"    限流，等 {wait} 秒", flush=True)
+            msg = r.text[:200]
+            # 每日配額用盡就別再空轉，直接收工，明天重跑會從斷點接續
+            if "per day" in msg or "TPD" in msg or "daily" in msg.lower():
+                print(f"    今日配額已用完：{msg[:120]}", flush=True)
+                return "QUOTA"
+            wait = int(float(r.headers.get("retry-after", 0))) or 20 * (attempt + 1)
+            print(f"    限流，等 {wait} 秒（{show_limits(r)}）", flush=True)
             time.sleep(wait)
             continue
         if r.status_code != 200:
             print(f"    HTTP {r.status_code}: {r.text[:160]}", flush=True)
             if r.status_code in (401, 403):
                 sys.exit("金鑰無效，請確認 GROQ_API_KEY")
+            if r.status_code == 404:
+                sys.exit(f"模型 {model} 不存在，請用 GROQ_MODEL 指定，或確認官方是否已下架")
             time.sleep(5)
             continue
 
@@ -154,8 +217,9 @@ def main():
     if args.limit:
         todo = todo[: args.limit]
 
+    model = pick_model(key)
     print(f"原文共 {len(texts)} 條，已翻 {len(store)} 條，這次要翻 {len(todo)} 條")
-    print(f"模型 {MODEL}，每批 {BATCH} 條\n")
+    print(f"模型 {model}，每批 {BATCH} 條\n")
     if not todo:
         return
 
@@ -169,13 +233,18 @@ def main():
             chars += len(todo[i])
             i += 1
 
-        got = call_groq(key, batch)
+        got = call_groq(key, batch, model)
+        if got == "QUOTA":
+            save_store(store)
+            print(f"\n今日免費額度用完，已存檔（新譯 {done} 條，累計 {len(store)} 條）")
+            print("明天再跑一次同樣的指令就會從斷點接續")
+            return
         if got is None and len(batch) > 1:
             # 整批失敗就逐條再試一次，避免一顆老鼠屎壞掉十條
             got = []
             for one in batch:
-                r = call_groq(key, [one])
-                got.append(r[0] if r else None)
+                r = call_groq(key, [one], model)
+                got.append(r[0] if r and r != "QUOTA" else None)
 
         if got is None:
             failed += len(batch)

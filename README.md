@@ -53,7 +53,7 @@ assets/img/                 圖片
 
 ## 翻譯
 
-內文翻譯需要 Groq 金鑰，用環境變數傳入，不要寫進檔案：
+內文翻譯需要 API 金鑰，用環境變數傳入，不要寫進檔案：
 
 ```
 $env:GROQ_API_KEY="你的金鑰"        # PowerShell
@@ -61,6 +61,25 @@ python scripts/translate.py --limit 50   # 先試 50 條
 python scripts/translate.py              # 翻全部
 python scripts/build_data.py             # 把譯文併進網站資料
 ```
+
+規模：待翻 7838 條、115 萬字元，切成 784 批，約 96 萬 token。
+
+服務商可換，兩家都是 OpenAI 相容格式，模型會自動偵測（不寫死，因為官方會下架
+模型——`llama-3.3-70b-versatile` 已於 2026-06 棄用）：
+
+| | 每日限制 | 全站跑完要多久 |
+|---|---|---|
+| Groq（預設） | token 上限低 | 約 10 天，每天跑一次 |
+| Gemini | 只限 1500 請求／天，我們只要 784 次 | **約 80 分鐘** |
+
+改用 Gemini：
+
+```
+$env:GROQ_BASE="https://generativelanguage.googleapis.com/v1beta/openai"
+$env:GROQ_API_KEY="你的 Gemini 金鑰"
+```
+
+撞到當日配額會自動存檔收工，隔天重跑從斷點接續。
 
 譯文存在 `data/translations.json`，與網站資料分離，所以重建資料不會弄丟翻譯，
 翻譯本身也可以隨時中斷續跑。前端是逐條 fallback：某條沒翻就顯示該條英文原文，
