@@ -153,9 +153,11 @@ footer a:hover{color:var(--gold)}
 @media(max-width:720px){
   .tip{flex-direction:column;gap:10px}
   .tip .fig{flex:none}
-  nav{order:3;width:100%;margin-left:0}
+  /* 站名與切換鍵並排第一行，搜尋框獨佔第二行，不然它只剩 170px */
+  nav{order:2;margin-left:auto}
+  .search{order:3;width:100%;flex:none}
   .search input{width:100%}
-  .search{flex:1}
+  .results{width:100%}
 }
 </style>
 </head>
