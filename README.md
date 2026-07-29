@@ -68,6 +68,20 @@ python scripts/build_data.py             # 把譯文併進網站資料
 
 國名與段落標題已經全部中文化，不需要走翻譯管線。
 
+## 部署
+
+repo 約 790MB，主要是圖片。全站都是相對路徑，部署在子目錄也不會壞。
+
+**GitHub Pages**：Settings → Pages → Source 選 master / root。注意 Pages 有 1GB 的
+站台大小硬限制，目前 840MB 還在範圍內，但補圖前要留意。
+
+**Cloudflare Pages**（可搭配私有 repo）：Workers & Pages → Create → Pages →
+Connect to Git，framework preset 選 None、build command 留空、output directory 填 `/`。
+沒有 1GB 限制。若要限制只有自己看得到，再到 Zero Trust → Access → Applications
+加一個 self-hosted 應用指向該網域，policy 設成只允許自己的 email。
+
+`robots.txt` 與頁面的 `noindex` 都已設好，不會被搜尋引擎收錄而跟原站競爭。
+
 ## 幾個踩過的坑
 
 **Cloudflare 只擋沒有瀏覽器 headers 的請求。** plonkit 的 HTML 加個 User-Agent
