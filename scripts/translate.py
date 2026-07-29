@@ -129,6 +129,12 @@ def list_models(key):
         return []
 
 
+def call_name(mid):
+    """Gemini 列表回傳 models/xxx，但呼叫時要用不含前綴的 xxx。
+    Groq 的 openai/gpt-oss-120b 那個斜線是名字的一部分，不能動。"""
+    return mid[len("models/"):] if mid.startswith("models/") else mid
+
+
 def pick_model(key):
     """查一次帳號可用的模型，照 MODEL_PREFS 挑，避免寫死的名字被官方下架"""
     if MODEL:
@@ -142,9 +148,9 @@ def pick_model(key):
 
     for m in MODEL_PREFS:
         if m in bare:
-            return bare[m]
+            return call_name(bare[m])
         if m.rsplit("/", 1)[-1] in bare:
-            return bare[m.rsplit("/", 1)[-1]]
+            return call_name(bare[m.rsplit("/", 1)[-1]])
 
     # 偏好清單全都不在，就挑一個穩定的對話模型（避開預覽版與非對話模型）
     for name in sorted(bare):
@@ -152,10 +158,10 @@ def pick_model(key):
         if any(k in low for k in AVOID):
             continue
         if "flash" in low or "gpt-oss" in low or "qwen" in low or "llama" in low:
-            return bare[name]
+            return call_name(bare[name])
     for name in sorted(bare):
         if not any(k in name.lower() for k in AVOID):
-            return bare[name]
+            return call_name(bare[name])
     return MODEL_PREFS[0]
 
 
