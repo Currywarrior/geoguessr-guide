@@ -44,11 +44,18 @@ API = BASE + "/chat/completions"
 MODEL_PREFS = [
     "gemini-2.5-flash",
     "gemini-flash-latest",
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-pro",
     "openai/gpt-oss-120b",
     "qwen/qwen3.6-27b",
     "openai/gpt-oss-20b",
-    "llama-3.3-70b-versatile",
 ]
+
+# 備援挑選時要避開的：實驗版、預覽版，以及根本不是拿來對話的模型
+AVOID = (
+    "preview", "experimental", "exp-", "thinking", "antigravity",
+    "image", "vision", "tts", "audio", "embedding", "whisper", "guard", "learnlm",
+)
 MODEL = os.environ.get("GROQ_MODEL", "")
 
 BATCH = 10          # 一次送幾條，太多容易讓模型漏譯或亂了順序
@@ -109,24 +116,46 @@ def save_store(store):
     STORE.write_text(json.dumps(store, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
+def list_models(key):
+    try:
+        r = requests.get(BASE + "/models",
+                         headers={"Authorization": f"Bearer {key}"}, timeout=30)
+        if r.status_code != 200:
+            print(f"查詢模型失敗 HTTP {r.status_code}: {r.text[:160]}")
+            return []
+        return [m["id"] for m in r.json().get("data", [])]
+    except requests.RequestException as e:
+        print(f"查詢模型失敗 {type(e).__name__}")
+        return []
+
+
 def pick_model(key):
     """查一次帳號可用的模型，照 MODEL_PREFS 挑，避免寫死的名字被官方下架"""
     if MODEL:
         return MODEL
-    try:
-        r = requests.get(BASE + "/models",
-                         headers={"Authorization": f"Bearer {key}"}, timeout=30)
-        ids = {m["id"] for m in r.json().get("data", [])} if r.status_code == 200 else set()
-    except requests.RequestException:
-        ids = set()
+    ids = list_models(key)
+    # Gemini 的 OpenAI 相容端點回傳 "models/gemini-2.5-flash" 這種帶前綴的 id，
+    # 直接比對會全部落空，要先把前綴剝掉再對。
+    bare = {}
+    for i in ids:
+        bare.setdefault(i.rsplit("/", 1)[-1], i)
+
     for m in MODEL_PREFS:
-        if m in ids:
-            return m
-    if ids:
-        # 偏好清單全不在，就挑一個看起來像指令模型的
-        for m in sorted(ids):
-            if "whisper" not in m and "guard" not in m and "tts" not in m:
-                return m
+        if m in bare:
+            return bare[m]
+        if m.rsplit("/", 1)[-1] in bare:
+            return bare[m.rsplit("/", 1)[-1]]
+
+    # 偏好清單全都不在，就挑一個穩定的對話模型（避開預覽版與非對話模型）
+    for name in sorted(bare):
+        low = name.lower()
+        if any(k in low for k in AVOID):
+            continue
+        if "flash" in low or "gpt-oss" in low or "qwen" in low or "llama" in low:
+            return bare[name]
+    for name in sorted(bare):
+        if not any(k in name.lower() for k in AVOID):
+            return bare[name]
     return MODEL_PREFS[0]
 
 
@@ -141,15 +170,17 @@ def show_limits(r):
     return "，".join(parts)
 
 
-def call_groq(key, batch, model):
-    body = {
-        "model": model,
-        "messages": [
+def call_groq(key, batch, model, no_system=False):
+    payload = json.dumps(batch, ensure_ascii=False)
+    if no_system:
+        # 有些模型不吃 system role，就把規則併進使用者訊息
+        msgs = [{"role": "user", "content": SYSTEM + "\n\n輸入：\n" + payload}]
+    else:
+        msgs = [
             {"role": "system", "content": SYSTEM},
-            {"role": "user", "content": json.dumps(batch, ensure_ascii=False)},
-        ],
-        "temperature": 0.2,
-    }
+            {"role": "user", "content": payload},
+        ]
+    body = {"model": model, "messages": msgs, "temperature": 0.2}
     headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
 
     for attempt in range(5):
@@ -171,11 +202,15 @@ def call_groq(key, batch, model):
             time.sleep(wait)
             continue
         if r.status_code != 200:
-            print(f"    HTTP {r.status_code}: {r.text[:160]}", flush=True)
+            body_txt = r.text[:200]
+            # 該模型不支援 system role，改把規則併進 user 訊息重來
+            if r.status_code == 400 and "instruction" in body_txt.lower() and not no_system:
+                return "NO_SYSTEM"
+            print(f"    HTTP {r.status_code}: {body_txt[:160]}", flush=True)
             if r.status_code in (401, 403):
                 sys.exit("金鑰無效，請確認 GROQ_API_KEY")
             if r.status_code == 404:
-                sys.exit(f"模型 {model} 不存在，請用 GROQ_MODEL 指定，或確認官方是否已下架")
+                sys.exit(f"模型 {model} 不存在，可用 GROQ_MODEL 指定，或跑 --list-models 看有哪些")
             time.sleep(5)
             continue
 
@@ -205,11 +240,20 @@ def call_groq(key, batch, model):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0, help="只翻前 N 條，用來試水溫")
+    ap.add_argument("--list-models", action="store_true", help="列出帳號可用的模型就結束")
     args = ap.parse_args()
 
     key = os.environ.get("GROQ_API_KEY")
     if not key:
         sys.exit("請先設定環境變數 GROQ_API_KEY")
+
+    if args.list_models:
+        ids = list_models(key)
+        print(f"可用模型 {len(ids)} 個：")
+        for i in sorted(ids):
+            print("   ", i)
+        print(f"\n自動會挑：{pick_model(key)}")
+        return
 
     texts = collect_texts()
     store = load_store()
@@ -224,6 +268,7 @@ def main():
         return
 
     done = failed = 0
+    no_system = False
     t0 = time.time()
     i = 0
     while i < len(todo):
@@ -233,7 +278,11 @@ def main():
             chars += len(todo[i])
             i += 1
 
-        got = call_groq(key, batch, model)
+        got = call_groq(key, batch, model, no_system)
+        if got == "NO_SYSTEM":
+            no_system = True
+            print("    這個模型不吃 system 角色，改把規則併進訊息重試", flush=True)
+            got = call_groq(key, batch, model, True)
         if got == "QUOTA":
             save_store(store)
             print(f"\n今日免費額度用完，已存檔（新譯 {done} 條，累計 {len(store)} 條）")
@@ -243,7 +292,7 @@ def main():
             # 整批失敗就逐條再試一次，避免一顆老鼠屎壞掉十條
             got = []
             for one in batch:
-                r = call_groq(key, [one], model)
+                r = call_groq(key, [one], model, no_system)
                 got.append(r[0] if r and r != "QUOTA" else None)
 
         if got is None:
