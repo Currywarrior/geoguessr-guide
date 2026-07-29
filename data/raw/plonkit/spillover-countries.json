@@ -1,0 +1,315 @@
+{
+  "success": true,
+  "data": {
+    "public": {
+      "_id": "spillover-countries",
+      "createdAt": "2025-09-07T23:00:07.052Z",
+      "updatedAt": "2026-01-23T00:00:00.000Z",
+      "lastUpdatedBy": "",
+      "title": "Spillover countries",
+      "slug": "spillover-countries",
+      "code": "XX-SPILLS",
+      "cat": [
+        "General Guide"
+      ],
+      "heroImage": "/images/spillover-countries/Nuijamaa_border_crossing_2017_03__28cropped_29.jpg",
+      "headerNotes": [],
+      "steps": [
+        {
+          "kind": "tip",
+          "title": "Information on spillovers",
+          "items": [
+            {
+              "kind": "notes",
+              "id": "blpJ",
+              "text": [
+                "This guide contains all countries with **spill coverage**.",
+                "Spillover coverage occurs when a Google Car from a country with official coverage drives over the border into a bordering country with no coverage, resulting in that country getting a bit of official coverage.",
+                "Another type of spill is **Generation spill**. The country with the spill coverage has official coverage, however not with a certain camera gen.",
+                "This is most useful for country streaks, as spillover countries are counted as such, instead of the original country.",
+                "_Each spill was verified using OpenStreetMap, which has more accurate borders than Google Maps. This means that on Google Maps, the spill may look further in or further out of the country._"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "tip",
+          "title": "Regular spillovers",
+          "items": [
+            {
+              "kind": "subsection",
+              "id": "f61P",
+              "title": "Tanzania"
+            },
+            {
+              "kind": "tip",
+              "id": "bUZ0",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Tanzania_Rongai.png",
+                  "imageLink": "https://goo.gl/maps/b3XfCvCvzTiuwnUy7",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The Tanzania Rongai Border spill from Kenya can be recognized by the **dirt road turning into a paved road**, with black and white kerbs. Many pine trees are also seen along the dirt road."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "vwvs",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Tanzania_Namanga.png",
+                  "imageLink": "https://goo.gl/maps/u7RVyQEaM3k6JVKK9",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "A **white hut** with the follow car waiting at it can be seen at the Namanga border crossing spill."
+                ]
+              }
+            },
+            {
+              "kind": "subsection",
+              "id": "IMTt",
+              "title": "The Gambia"
+            },
+            {
+              "kind": "tip",
+              "id": "tt9c",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Gambia_Dimbaya.png",
+                  "imageLink": "/images/spillover-countries/Gambia_Dimbaya.png",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "There are 3 distinct roads in the Dimbaya spill into The Gambia.",
+                  "- A [paved east-west road](https://goo.gl/maps/9MPhTkPqRC7Wb2Fb7) with no other cars or humans in sight",
+                  "- A [rural dirt road](https://goo.gl/maps/dwWcG2QD1qYyhhfh7) with fences along the road and a large car blur",
+                  "- A [narrow but populated dirt road](https://goo.gl/maps/Xo3bGFo94XoxDJ4T7) with houses."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "zFZV",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Gambia_N5.png",
+                  "imageLink": "https://goo.gl/maps/ibcHzMjqt6Ghf4FD6",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The N5 spill into The Gambia can be recognized by the **red dirt shoulders, long grass** and the car noticeably driving near the side of the road."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "sL2m",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Gambia_N4.png",
+                  "imageLink": "https://goo.gl/maps/8FUT7bTQV1s39Rza9",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "A **light blue shack** can be seen at the N4 spill."
+                ]
+              }
+            },
+            {
+              "kind": "subsection",
+              "id": "qo6s",
+              "title": "Belarus"
+            },
+            {
+              "kind": "tip",
+              "id": "yNOt",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Belarus_P21.png",
+                  "imageLink": "https://goo.gl/maps/yKPqYfB1eUMQdE629",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The P21 spill between Viciebsk in Belarus and Smolensk can be recognized by the yellow centre line, **slightly red soil** and **evening** coverage."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "AQaF",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Belarus_E30.png",
+                  "imageLink": "https://goo.gl/maps/681tUrrRqMghcFjH7",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The E30 spill west of Smolensk can be recognized by the **single yellow line**, newly paved road under construction and the sign with “ВИЦЕБСКАЯ ВОБЛ.” (Vitsebskaya vobl.) on it."
+                ]
+              }
+            },
+            {
+              "kind": "subsection",
+              "id": "jRU9",
+              "title": "Guyana"
+            },
+            {
+              "kind": "tip",
+              "id": "H5vA",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Guyana_Bridge.png",
+                  "imageLink": "https://goo.gl/maps/qdg3eyUcrKpH7GJBA",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The **Takutu River Bridge**, west of Lethem, can be recognized by the lack of cars around and the driving side changer to the east."
+                ]
+              }
+            },
+            {
+              "kind": "subsection",
+              "id": "TrYo",
+              "title": "Venezuela"
+            },
+            {
+              "kind": "tip",
+              "id": "XqKF",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Venezuela_Bridge.png",
+                  "imageLink": "https://goo.gl/maps/noUf8RacCV7yCacS7",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The Puente Internacional Francisco de Paula Santander Bridge between Cúcuta in Colombia and Ureña in Venezuela can be recognized by the **yellow and red guardrail**, and streetlights with a red base. The bridge is overall pretty busy."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "srta",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Venezuela_Dirt_Spill.png",
+                  "imageLink": "https://goo.gl/maps/mqZJPzJDWq2fgPtx8",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "This dirt road with a **sandy** and arid environment, and a T-junction ahead, can be seen south of Maicao."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "7txk",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Venezuela_Roraima.png",
+                  "imageLink": "https://goo.gl/maps/RNKdEMF3teguHuQL9",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The BR-174 spill from Roraima to Venezuela can be recognized by the two countries' flags, and the name of the countries written on them."
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "kind": "tip",
+          "title": "Generation spill",
+          "items": [
+            {
+              "kind": "subsection",
+              "id": "qOca",
+              "title": "Monaco"
+            },
+            {
+              "kind": "tip",
+              "id": "hxDO",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Monaco_Gen_3_Spill.png",
+                  "imageLink": "https://goo.gl/maps/6u1jNGYeR2EMAEq4A",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "Many roads with **Generation 3 spill** can be seen in the northwest of Monaco, with a small section in the [northeast](https://goo.gl/maps/4Kc6SfQD8zPMSrsp9). The Google car will have a [short antenna](https://goo.gl/maps/nb9wWCTEutwbV9hu7). Many of these locations are nondescript, so make sure to look out for clues such as [plates](https://goo.gl/maps/nJPHc7EkHSae6jQq5) and [bollards](https://goo.gl/maps/oAxkBgYhEwwm4VDy8)."
+                ]
+              },
+              "tags": [
+                "bollard"
+              ]
+            },
+            {
+              "kind": "subsection",
+              "id": "fprx",
+              "title": "Paraguay"
+            },
+            {
+              "kind": "tip",
+              "id": "PisM",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Paraguay_Ponta_Pora.png",
+                  "imageLink": "https://goo.gl/maps/8sVebukuMt1TSzVQ8",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "A rather extensive spill can be seen from the Brazilian town of **Ponta Porã** into Pedro Juan Caballero in Paraguay. This border road looks like a regular road in any Brazilian town, however [Paraguay flags](https://goo.gl/maps/gBqnmUYyAJFYDKDq7) can occasionally be seen."
+                ]
+              }
+            },
+            {
+              "kind": "subsection",
+              "id": "n34T",
+              "title": "Uruguay"
+            },
+            {
+              "kind": "tip",
+              "id": "iw5M",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/spillover-countries/Uruguay_Spill.png",
+                  "imageLink": "https://goo.gl/maps/vVLqPWa6WuHJNQqE8",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "This **bridge** with thick white guardrails can be seen in the Generation 4 Uruguay spill. The roundabout at the end of the spill can be recognized by its [octagonal shape](https://goo.gl/maps/eXoaEeNy8K5yYH2B8)."
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "kind": "map",
+          "title": "Maps and resources",
+          "text": [
+            "Here are some resources to help you practise the Spillover Countries:",
+            "- **Plonk It Spillover Countries **([map link](https://www.geoguessr.com/maps/64970683452f255e0817a26d)) - This map contains locations for practising each meta in the Plonk It Spillover Countries guide from step 2 to 3."
+          ]
+        }
+      ],
+      "draftChangelog": []
+    }
+  }
+}

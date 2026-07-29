@@ -1,0 +1,1262 @@
+[
+  {
+    "title": "United States of America",
+    "slug": "united-states",
+    "updatedAt": "2026-07-28T19:31:18.148Z",
+    "code": "US",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Botswana",
+    "slug": "botswana",
+    "updatedAt": "2026-04-09T19:32:03.952Z",
+    "code": "BW",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Egypt",
+    "slug": "egypt",
+    "updatedAt": "2025-10-14T17:05:25.784Z",
+    "code": "EG",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Eswatini",
+    "slug": "eswatini",
+    "updatedAt": "2025-10-18T16:25:01.255Z",
+    "code": "SZ",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Ghana",
+    "slug": "ghana",
+    "updatedAt": "2026-06-22T18:11:31.447Z",
+    "code": "GH",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Kenya",
+    "slug": "kenya",
+    "updatedAt": "2026-06-24T19:30:48.710Z",
+    "code": "KE",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Lesotho",
+    "slug": "lesotho",
+    "updatedAt": "2026-07-04T00:52:24.025Z",
+    "code": "LS",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Madagascar",
+    "slug": "madagascar",
+    "updatedAt": "2025-10-04T15:56:22.193Z",
+    "code": "MG",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Mali",
+    "slug": "mali",
+    "updatedAt": "2024-01-29T00:00:00.000Z",
+    "code": "ML",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Namibia",
+    "slug": "namibia",
+    "updatedAt": "2026-04-22T21:38:55.932Z",
+    "code": "NA",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Reunion",
+    "slug": "reunion",
+    "updatedAt": "2026-04-29T16:30:46.955Z",
+    "code": "RE",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "São Tomé and Príncipe",
+    "slug": "sao-tome-and-principe",
+    "updatedAt": "2026-05-31T20:48:29.504Z",
+    "code": "ST",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Senegal",
+    "slug": "senegal",
+    "updatedAt": "2023-07-27T00:00:00.000Z",
+    "code": "SN",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "South Africa",
+    "slug": "south-africa",
+    "updatedAt": "2026-02-03T17:00:43.964Z",
+    "code": "ZA",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Tanzania",
+    "slug": "tanzania",
+    "updatedAt": "2023-07-06T00:00:00.000Z",
+    "code": "TZ",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Tunisia",
+    "slug": "tunisia",
+    "updatedAt": "2025-12-04T17:35:35.129Z",
+    "code": "TN",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Nigeria",
+    "slug": "nigeria",
+    "updatedAt": "2026-06-07T08:47:52.517Z",
+    "code": "NG",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Uganda",
+    "slug": "uganda",
+    "updatedAt": "2024-08-06T00:00:00.000Z",
+    "code": "UG",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Antarctica",
+    "slug": "antarctica",
+    "updatedAt": "2024-02-28T00:00:00.000Z",
+    "code": "AQ",
+    "cat": [
+      "Antarctica"
+    ]
+  },
+  {
+    "title": "South Georgia & Sandwich Islands",
+    "slug": "south-georgia-sandwich-islands",
+    "updatedAt": "2023-11-01T00:00:00.000Z",
+    "code": "GS",
+    "cat": [
+      "South America",
+      "Antarctica"
+    ]
+  },
+  {
+    "title": "American Samoa",
+    "slug": "american-samoa",
+    "updatedAt": "2023-10-12T00:00:00.000Z",
+    "code": "AS",
+    "cat": [
+      "Oceania"
+    ]
+  },
+  {
+    "title": "Christmas Island",
+    "slug": "christmas-island",
+    "updatedAt": "2022-12-24T00:00:00.000Z",
+    "code": "CX",
+    "cat": [
+      "Oceania"
+    ]
+  },
+  {
+    "title": "Cocos Islands",
+    "slug": "cocos-islands",
+    "updatedAt": "2023-11-01T00:00:00.000Z",
+    "code": "CC",
+    "cat": [
+      "Oceania"
+    ]
+  },
+  {
+    "title": "Guam",
+    "slug": "guam",
+    "updatedAt": "2025-04-08T00:00:00.000Z",
+    "code": "GU",
+    "cat": [
+      "Oceania"
+    ]
+  },
+  {
+    "title": "Northern Mariana Islands",
+    "slug": "northern-mariana-islands",
+    "updatedAt": "2023-10-15T00:00:00.000Z",
+    "code": "MP",
+    "cat": [
+      "Oceania"
+    ]
+  },
+  {
+    "title": "Australia",
+    "slug": "australia",
+    "updatedAt": "2026-07-19T00:03:06.870Z",
+    "code": "AU",
+    "cat": [
+      "Oceania"
+    ]
+  },
+  {
+    "title": "Pitcairn Islands",
+    "slug": "pitcairn-islands",
+    "updatedAt": "2024-01-16T00:00:00.000Z",
+    "code": "PN",
+    "cat": [
+      "Oceania"
+    ]
+  },
+  {
+    "title": "Vanuatu",
+    "slug": "vanuatu",
+    "updatedAt": "2025-04-08T00:00:00.000Z",
+    "code": "VU",
+    "cat": [
+      "Oceania"
+    ]
+  },
+  {
+    "title": "New Zealand",
+    "slug": "new-zealand",
+    "updatedAt": "2026-05-31T21:23:20.015Z",
+    "code": "NZ",
+    "cat": [
+      "Oceania"
+    ]
+  },
+  {
+    "title": "Argentina",
+    "slug": "argentina",
+    "updatedAt": "2026-07-10T20:03:56.200Z",
+    "code": "AR",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Bolivia",
+    "slug": "bolivia",
+    "updatedAt": "2025-12-02T15:19:40.527Z",
+    "code": "BO",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Chile",
+    "slug": "chile",
+    "updatedAt": "2026-06-03T22:27:33.820Z",
+    "code": "CL",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Brazil",
+    "slug": "brazil",
+    "updatedAt": "2026-07-11T23:16:21.716Z",
+    "code": "BR",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Curaçao",
+    "slug": "curacao",
+    "updatedAt": "2026-05-31T21:06:22.200Z",
+    "code": "CW",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Colombia",
+    "slug": "colombia",
+    "updatedAt": "2026-01-08T17:29:37.047Z",
+    "code": "CO",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Falkland Islands",
+    "slug": "falkland-islands",
+    "updatedAt": "2023-11-01T00:00:00.000Z",
+    "code": "FK",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Ecuador",
+    "slug": "ecuador",
+    "updatedAt": "2026-03-27T20:33:22.132Z",
+    "code": "EC",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Peru",
+    "slug": "peru",
+    "updatedAt": "2026-06-23T03:46:03.785Z",
+    "code": "PE",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Uruguay",
+    "slug": "uruguay",
+    "updatedAt": "2026-04-29T12:48:33.179Z",
+    "code": "UY",
+    "cat": [
+      "South America"
+    ]
+  },
+  {
+    "title": "Bermuda",
+    "slug": "bermuda",
+    "updatedAt": "2023-11-01T00:00:00.000Z",
+    "code": "BM",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Alaska",
+    "slug": "alaska",
+    "updatedAt": "2026-01-31T16:08:48.260Z",
+    "code": "US-AK",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Dominican Republic",
+    "slug": "dominican-republic",
+    "updatedAt": "2024-08-06T00:00:00.000Z",
+    "code": "DO",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Costa Rica",
+    "slug": "costa-rica",
+    "updatedAt": "2026-06-20T01:31:32.372Z",
+    "code": "CR",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Martinique",
+    "slug": "martinique",
+    "updatedAt": "2025-11-06T22:36:22.056Z",
+    "code": "MQ",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Guatemala",
+    "slug": "guatemala",
+    "updatedAt": "2026-05-02T16:00:23.915Z",
+    "code": "GT",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Hawaii",
+    "slug": "hawaii",
+    "updatedAt": "2026-01-18T16:50:31.149Z",
+    "code": "US-HI",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Puerto Rico",
+    "slug": "puerto-rico",
+    "updatedAt": "2025-12-12T19:12:59.053Z",
+    "code": "PR",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Saint Pierre and Miquelon",
+    "slug": "saint-pierre-and-miquelon",
+    "updatedAt": "2025-04-08T00:00:00.000Z",
+    "code": "PM",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "US Minor Outlying Islands",
+    "slug": "us-minor-outlying-islands",
+    "updatedAt": "2023-10-12T00:00:00.000Z",
+    "code": "UM-MQ",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Panama",
+    "slug": "panama",
+    "updatedAt": "2026-06-03T16:18:34.312Z",
+    "code": "PA",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Canada",
+    "slug": "canada",
+    "updatedAt": "2026-06-20T02:35:26.528Z",
+    "code": "CA",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "US Virgin Islands",
+    "slug": "us-virgin-islands",
+    "updatedAt": "2025-11-09T00:38:00.471Z",
+    "code": "VI",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "Greenland",
+    "slug": "greenland",
+    "updatedAt": "2026-07-26T20:42:49.883Z",
+    "code": "GL",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "British Indian Ocean Territory",
+    "slug": "british-indian-ocean-territory",
+    "updatedAt": "2024-01-16T00:00:00.000Z",
+    "code": "IO",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Bhutan",
+    "slug": "bhutan",
+    "updatedAt": "2026-03-02T20:36:53.755Z",
+    "code": "BT",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "China",
+    "slug": "china",
+    "updatedAt": "2024-02-07T00:00:00.000Z",
+    "code": "CN",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Bangladesh",
+    "slug": "bangladesh",
+    "updatedAt": "2026-07-16T20:01:59.191Z",
+    "code": "BD",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Iraq",
+    "slug": "iraq",
+    "updatedAt": "2024-02-07T00:00:00.000Z",
+    "code": "IQ",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Cambodia",
+    "slug": "cambodia",
+    "updatedAt": "2026-07-04T00:54:11.016Z",
+    "code": "KH",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Hong Kong",
+    "slug": "hong-kong",
+    "updatedAt": "2026-07-17T21:02:00.386Z",
+    "code": "HK",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Jordan",
+    "slug": "jordan",
+    "updatedAt": "2024-08-06T00:00:00.000Z",
+    "code": "JO",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Laos",
+    "slug": "laos",
+    "updatedAt": "2025-11-08T01:32:38.330Z",
+    "code": "LA",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Israel & the West Bank",
+    "slug": "israel-west-bank",
+    "updatedAt": "2024-08-06T00:00:00.000Z",
+    "code": "IL",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Kazakhstan",
+    "slug": "kazakhstan",
+    "updatedAt": "2026-03-28T16:09:29.598Z",
+    "code": "KZ",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Japan",
+    "slug": "japan",
+    "updatedAt": "2026-05-12T19:22:40.916Z",
+    "code": "JP",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Kyrgyzstan",
+    "slug": "kyrgyzstan",
+    "updatedAt": "2026-02-06T15:24:44.489Z",
+    "code": "KG",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Macau",
+    "slug": "macau",
+    "updatedAt": "2024-02-07T00:00:00.000Z",
+    "code": "MO",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Malaysia",
+    "slug": "malaysia",
+    "updatedAt": "2026-07-20T17:57:14.943Z",
+    "code": "MY",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Singapore",
+    "slug": "singapore",
+    "updatedAt": "2023-03-06T00:00:00.000Z",
+    "code": "SG",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Pakistan",
+    "slug": "pakistan",
+    "updatedAt": "2024-02-07T00:00:00.000Z",
+    "code": "PK",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "South Korea",
+    "slug": "south-korea",
+    "updatedAt": "2025-12-05T22:43:39.734Z",
+    "code": "KR",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Qatar",
+    "slug": "qatar",
+    "updatedAt": "2023-10-27T00:00:00.000Z",
+    "code": "QA",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Philippines",
+    "slug": "philippines",
+    "updatedAt": "2026-03-27T17:10:22.869Z",
+    "code": "PH",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Sri Lanka",
+    "slug": "sri-lanka",
+    "updatedAt": "2026-03-02T20:38:13.882Z",
+    "code": "LK",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Mongolia",
+    "slug": "mongolia",
+    "updatedAt": "2026-03-02T20:55:47.363Z",
+    "code": "MN",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Oman",
+    "slug": "oman",
+    "updatedAt": "2026-03-28T20:04:48.994Z",
+    "code": "OM",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "United Arab Emirates",
+    "slug": "united-arab-emirates",
+    "updatedAt": "2024-08-06T00:00:00.000Z",
+    "code": "AE",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Nepal",
+    "slug": "nepal",
+    "updatedAt": "2026-03-02T20:48:27.489Z",
+    "code": "NP",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Taiwan",
+    "slug": "taiwan",
+    "updatedAt": "2026-04-30T15:40:49.551Z",
+    "code": "TW",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Turkey",
+    "slug": "turkey",
+    "updatedAt": "2026-06-19T09:48:04.588Z",
+    "code": "TR",
+    "cat": [
+      "Europe",
+      "Asia"
+    ]
+  },
+  {
+    "title": "Thailand",
+    "slug": "thailand",
+    "updatedAt": "2026-05-12T22:03:20.237Z",
+    "code": "TH",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Andorra",
+    "slug": "andorra",
+    "updatedAt": "2023-07-13T00:00:00.000Z",
+    "code": "AD",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Belarus",
+    "slug": "belarus",
+    "updatedAt": "2025-11-05T21:25:59.997Z",
+    "code": "BY",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Azores",
+    "slug": "azores",
+    "updatedAt": "2025-11-13T16:20:58.506Z",
+    "code": "PT-AZ",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Albania",
+    "slug": "albania",
+    "updatedAt": "2026-07-05T11:22:21.696Z",
+    "code": "AL",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Austria",
+    "slug": "austria",
+    "updatedAt": "2026-07-10T20:04:55.484Z",
+    "code": "AT",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Croatia",
+    "slug": "croatia",
+    "updatedAt": "2026-03-27T16:46:53.352Z",
+    "code": "HR",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Bulgaria",
+    "slug": "bulgaria",
+    "updatedAt": "2026-07-18T12:10:09.274Z",
+    "code": "BG",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Denmark",
+    "slug": "denmark",
+    "updatedAt": "2026-03-02T20:44:09.745Z",
+    "code": "DK",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Estonia",
+    "slug": "estonia",
+    "updatedAt": "2026-04-10T19:17:46.758Z",
+    "code": "EE",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Czechia",
+    "slug": "czechia",
+    "updatedAt": "2026-07-21T17:47:58.604Z",
+    "code": "CZ",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Faroe Islands",
+    "slug": "faroe-islands",
+    "updatedAt": "2026-04-19T19:12:32.992Z",
+    "code": "FO",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Gibraltar",
+    "slug": "gibraltar",
+    "updatedAt": "2026-02-25T21:43:58.512Z",
+    "code": "GI",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Finland",
+    "slug": "finland",
+    "updatedAt": "2026-03-19T16:31:11.080Z",
+    "code": "FI",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Hungary",
+    "slug": "hungary",
+    "updatedAt": "2025-12-27T23:30:43.819Z",
+    "code": "HU",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Greece",
+    "slug": "greece",
+    "updatedAt": "2025-12-31T21:54:50.280Z",
+    "code": "GR",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Iceland",
+    "slug": "iceland",
+    "updatedAt": "2025-04-08T00:00:00.000Z",
+    "code": "IS",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Germany",
+    "slug": "germany",
+    "updatedAt": "2026-06-01T15:49:15.009Z",
+    "code": "DE",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "France",
+    "slug": "france",
+    "updatedAt": "2025-12-28T18:34:54.642Z",
+    "code": "FR",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Cyprus",
+    "slug": "cyprus",
+    "updatedAt": "2026-07-09T22:36:05.170Z",
+    "code": "CY",
+    "cat": [
+      "Europe",
+      "Asia"
+    ]
+  },
+  {
+    "title": "Isle of Man",
+    "slug": "isle-of-man",
+    "updatedAt": "2024-11-18T00:00:00.000Z",
+    "code": "IM",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Ireland",
+    "slug": "ireland",
+    "updatedAt": "2026-07-04T01:01:57.211Z",
+    "code": "IE",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Jersey",
+    "slug": "jersey",
+    "updatedAt": "2023-03-06T22:30:37.924Z",
+    "code": "JE",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Latvia",
+    "slug": "latvia",
+    "updatedAt": "2026-04-10T22:36:23.830Z",
+    "code": "LV",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Liechtenstein",
+    "slug": "liechtenstein",
+    "updatedAt": "2024-10-01T00:00:00.000Z",
+    "code": "LI",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Lithuania",
+    "slug": "lithuania",
+    "updatedAt": "2026-04-10T23:49:53.035Z",
+    "code": "LT",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Luxembourg",
+    "slug": "luxembourg",
+    "updatedAt": "2025-12-27T23:42:56.011Z",
+    "code": "LU",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Italy",
+    "slug": "italy",
+    "updatedAt": "2026-07-13T20:42:10.740Z",
+    "code": "IT",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Monaco",
+    "slug": "monaco",
+    "updatedAt": "2025-12-27T23:34:22.734Z",
+    "code": "MC",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Malta",
+    "slug": "malta",
+    "updatedAt": "2025-12-07T11:52:48.280Z",
+    "code": "MT",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Montenegro",
+    "slug": "montenegro",
+    "updatedAt": "2026-07-05T11:31:35.241Z",
+    "code": "ME",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Madeira",
+    "slug": "madeira",
+    "updatedAt": "2025-12-11T20:37:41.334Z",
+    "code": "PT-MA",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "North Macedonia",
+    "slug": "north-macedonia",
+    "updatedAt": "2026-07-05T11:43:03.064Z",
+    "code": "MK",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Poland",
+    "slug": "poland",
+    "updatedAt": "2026-03-30T22:04:47.347Z",
+    "code": "PL",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Netherlands",
+    "slug": "netherlands",
+    "updatedAt": "2025-12-14T13:20:55.164Z",
+    "code": "NL",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Portugal",
+    "slug": "portugal",
+    "updatedAt": "2026-06-20T00:59:26.778Z",
+    "code": "PT",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Norway",
+    "slug": "norway",
+    "updatedAt": "2026-06-18T23:57:07.622Z",
+    "code": "NO",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "India",
+    "slug": "india",
+    "updatedAt": "2026-07-28T19:42:40.874Z",
+    "code": "IN",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Mexico",
+    "slug": "mexico",
+    "updatedAt": "2026-07-14T19:43:44.405Z",
+    "code": "MX",
+    "cat": [
+      "North America"
+    ]
+  },
+  {
+    "title": "San Marino",
+    "slug": "san-marino",
+    "updatedAt": "2024-08-06T00:00:00.000Z",
+    "code": "SM",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Serbia",
+    "slug": "serbia",
+    "updatedAt": "2026-07-05T11:13:16.899Z",
+    "code": "RS",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Romania",
+    "slug": "romania",
+    "updatedAt": "2026-07-16T19:58:17.781Z",
+    "code": "RO",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Slovenia",
+    "slug": "slovenia",
+    "updatedAt": "2025-10-22T18:04:11.679Z",
+    "code": "SI",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Svalbard",
+    "slug": "svalbard",
+    "updatedAt": "2023-11-17T00:00:00.000Z",
+    "code": "SJ",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Slovakia",
+    "slug": "slovakia",
+    "updatedAt": "2026-07-21T17:47:50.243Z",
+    "code": "SK",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Switzerland",
+    "slug": "switzerland",
+    "updatedAt": "2025-11-08T16:19:11.360Z",
+    "code": "CH",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Ukraine",
+    "slug": "ukraine",
+    "updatedAt": "2026-04-30T15:28:53.207Z",
+    "code": "UA",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Russia",
+    "slug": "russia",
+    "updatedAt": "2026-07-19T22:13:35.976Z",
+    "code": "RU",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "United Kingdom",
+    "slug": "united-kingdom",
+    "updatedAt": "2026-05-02T18:24:44.994Z",
+    "code": "GB",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Spain",
+    "slug": "spain",
+    "updatedAt": "2026-05-03T14:07:56.094Z",
+    "code": "ES",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Sweden",
+    "slug": "sweden",
+    "updatedAt": "2026-06-01T10:33:39.494Z",
+    "code": "SE",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Spillover countries",
+    "slug": "spillover-countries",
+    "updatedAt": "2026-01-23T19:57:38.753Z",
+    "code": "XX-SPILLS",
+    "cat": [
+      "General Guide"
+    ]
+  },
+  {
+    "title": "Indonesia",
+    "slug": "indonesia",
+    "updatedAt": "2026-06-23T03:32:17.437Z",
+    "code": "ID",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Map directory",
+    "slug": "maps",
+    "updatedAt": "2024-01-23T00:00:00.000Z",
+    "code": "XX-MAPS",
+    "cat": [
+      "General Guide"
+    ]
+  },
+  {
+    "title": "Beginner's Guide to Geoguessr",
+    "slug": "beginners-guide",
+    "updatedAt": "2026-07-27T20:06:29.005Z",
+    "code": "XX-BEGINNERS",
+    "cat": [
+      "General Guide"
+    ]
+  },
+  {
+    "title": "Middle Earth",
+    "slug": "middle-earth",
+    "updatedAt": "2025-09-16T22:05:22.307Z",
+    "cat": []
+  },
+  {
+    "title": "Belgium",
+    "slug": "belgium",
+    "updatedAt": "2025-11-19T22:53:26.317Z",
+    "code": "BE",
+    "cat": [
+      "Europe"
+    ]
+  },
+  {
+    "title": "Rwanda",
+    "slug": "rwanda",
+    "updatedAt": "2026-07-17T20:25:36.363Z",
+    "code": "RW",
+    "cat": [
+      "Africa"
+    ]
+  },
+  {
+    "title": "Lebanon",
+    "slug": "lebanon",
+    "updatedAt": "2024-05-27T00:00:00.000Z",
+    "code": "LB",
+    "cat": [
+      "Asia"
+    ]
+  },
+  {
+    "title": "Vietnam",
+    "slug": "vietnam",
+    "updatedAt": "2026-06-01T11:20:26.437Z",
+    "code": "VN",
+    "cat": [
+      "Asia"
+    ]
+  }
+]

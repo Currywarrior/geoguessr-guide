@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>GeoGuessr 線索圖鑑</title>
+<style>
+:root{
+  --bg:#11141a; --panel:#181d25; --panel2:#1f252f; --line:#2b3340;
+  --ink:#e9e5db; --dim:#9aa3b2; --faint:#6b7483;
+  --gold:#c9a227; --green:#5c8a6a; --rust:#b1573a;
+  --radius:3px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg); color:var(--ink); font-size:15px; line-height:1.7;
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif;
+}
+/* 經緯格線，做出地圖集的底紋，不用漸層 */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.35;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 78%);
+}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:Georgia,"Times New Roman","Noto Serif TC",serif;font-weight:600;line-height:1.3}
+
+/* ---------- 版首 ---------- */
+header{
+  position:sticky; top:0; z-index:20; background:rgba(17,20,26,.94);
+  border-bottom:1px solid var(--line); backdrop-filter:blur(8px);
+}
+.bar{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.brand{font-family:Georgia,serif;font-size:19px;letter-spacing:.02em;white-space:nowrap}
+.brand b{color:var(--gold);font-weight:600}
+.brand span{color:var(--faint);font-size:12px;letter-spacing:.14em;display:block;margin-top:-2px}
+nav{display:flex;gap:2px;margin-left:auto}
+nav a{
+  padding:6px 14px; font-size:14px; color:var(--dim);
+  border:1px solid transparent; border-radius:var(--radius);
+}
+nav a:hover{color:var(--ink);border-color:var(--line)}
+nav a.on{color:var(--bg);background:var(--gold);border-color:var(--gold);font-weight:600}
+.search{position:relative}
+.search input{
+  width:210px; padding:7px 11px; font-size:14px; font-family:inherit;
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); color:var(--ink);
+}
+.search input:focus{outline:none;border-color:var(--gold)}
+.results{
+  position:absolute; top:calc(100% + 6px); right:0; width:330px; max-height:60vh; overflow:auto;
+  background:var(--panel2); border:1px solid var(--line); border-radius:var(--radius); display:none; z-index:30;
+}
+.results.show{display:block}
+.results a{display:block;padding:8px 12px;border-bottom:1px solid var(--line);font-size:14px}
+.results a:hover{background:var(--panel)}
+.results .k{color:var(--faint);font-size:12px;margin-left:6px}
+
+/* ---------- 版面 ---------- */
+main{max-width:1180px;margin:0 auto;padding:26px 20px 80px;position:relative;z-index:1}
+.view{display:none}
+.view.on{display:block}
+.lead{color:var(--dim);margin-bottom:22px;max-width:660px}
+.rule{display:flex;align-items:center;gap:12px;margin:34px 0 16px}
+.rule h2{font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.rule::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* ---------- 卡片網格 ---------- */
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(178px,1fr))}
+.card{
+  display:block; padding:12px 14px; background:var(--panel);
+  border:1px solid var(--line); border-radius:var(--radius);
+  border-left:2px solid var(--line); transition:border-color .12s,background .12s;
+}
+.card:hover{background:var(--panel2);border-left-color:var(--gold)}
+.card .nm{font-size:15px;margin-bottom:2px}
+.card .meta{font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
+.card.thin{opacity:.62}
+.card.thin:hover{opacity:1}
+
+/* ---------- 國家頁 ---------- */
+.page-head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:6px}
+.back{font-size:13px;color:var(--faint)}
+.back:hover{color:var(--gold)}
+.page-head h1{font-size:30px;margin:8px 0 4px}
+.page-head .sub{color:var(--faint);font-size:13px;letter-spacing:.06em}
+
+/* 速查欄 */
+.facts{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));margin:20px 0 8px}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px}
+.fact .lb{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.fact .vl{font-size:16px;font-family:Georgia,serif}
+.fact .vl small{font-size:12px;color:var(--dim);font-family:inherit}
+/* 道路標線用 CSS 重現，原站也是這樣畫的，省下一整批圖片 */
+.road{display:flex;justify-content:space-between;gap:3px;background:#575d66;height:42px;width:66px;padding:0 3px;border-radius:1px}
+.road .grp{display:flex;gap:2px;align-items:stretch}
+.road .grp i{width:3px;display:block}
+
+/* tip 條目 */
+.sec{margin-top:30px}
+.sec h3{font-size:20px;margin-bottom:4px}
+.tip{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.tip:last-child{border-bottom:none}
+.tip.imp{border-left:2px solid var(--gold);padding-left:14px;background:rgba(201,162,39,.04)}
+.tip .fig{flex:0 0 300px}
+.tip .fig img{width:100%;border:1px solid var(--line);border-radius:var(--radius);display:block;background:var(--panel)}
+.tip .fig a{display:block;font-size:12px;color:var(--faint);margin-top:4px}
+.tip .fig a:hover{color:var(--gold)}
+.tip .bd{flex:1;min-width:0}
+.tip .bd p{margin-bottom:8px}
+.tip .bd p:last-child{margin-bottom:0}
+.tip .bd strong{color:var(--gold);font-weight:600}
+.tip .bd a{color:var(--green);border-bottom:1px solid rgba(92,138,106,.4)}
+.tip .note{color:var(--dim);font-size:14px}
+/* 與鄰國容易混淆的對照提醒，原站用 !! 標記 */
+.tip .bd p.warn{border-left:2px solid var(--rust);padding-left:11px;margin-left:1px}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+.tag{
+  font-size:11px; padding:2px 8px; color:var(--dim);
+  border:1px solid var(--line); border-radius:12px;
+}
+.tag:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ---------- 圖鑑 ---------- */
+.gal{display:grid;gap:9px;grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+.shot{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.shot img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:var(--panel2)}
+.shot .cap{padding:6px 9px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.shot .cap a{font-size:11px;color:var(--faint);white-space:nowrap}
+.shot .cap a:hover{color:var(--gold)}
+
+.empty{color:var(--faint);padding:30px 0;text-align:center}
+
+footer{
+  position:relative; z-index:1; border-top:1px solid var(--line);
+  margin-top:50px; padding:20px; text-align:center;
+  color:var(--faint); font-size:13px;
+}
+footer a{color:var(--dim);border-bottom:1px solid var(--line)}
+footer a:hover{color:var(--gold)}
+.count{color:var(--faint);font-size:13px;font-variant-numeric:tabular-nums}
+
+/* 燈箱：看細節用，圖鑑照片縮圖看不出電線桿紋路 */
+#lb{position:fixed;inset:0;background:rgba(8,10,14,.93);z-index:50;display:none;align-items:center;justify-content:center;padding:24px}
+#lb.on{display:flex}
+#lb img{max-width:100%;max-height:100%;object-fit:contain;border:1px solid var(--line)}
+#lb .x{position:absolute;top:16px;right:22px;font-size:26px;color:var(--dim);cursor:pointer;font-family:Georgia,serif}
+
+@media(max-width:720px){
+  .tip{flex-direction:column;gap:10px}
+  .tip .fig{flex:none}
+  nav{order:3;width:100%;margin-left:0}
+  .search input{width:100%}
+  .search{flex:1}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <a href="#/" class="brand"><b>GEO</b>ATLAS<span>GEOGUESSR 線索圖鑑</span></a>
+    <nav>
+      <a href="#/" data-nav="countries">按國家</a>
+      <a href="#/clues" data-nav="clues">按線索</a>
+    </nav>
+    <div class="search">
+      <input id="q" type="search" placeholder="搜尋國家或線索" autocomplete="off">
+      <div class="results" id="qr"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="view" id="v-countries"></section>
+  <section class="view" id="v-clues"></section>
+  <section class="view" id="v-country"></section>
+  <section class="view" id="v-clue"></section>
+</main>
+
+<footer>
+  <p>個人自用的學習筆記站。資料與圖片整理自
+    <a href="https://www.plonkit.net/" target="_blank" rel="noopener">Plonk It</a> 與
+    <a href="https://geohints.com/" target="_blank" rel="noopener">GeoHints</a>，
+    著作權屬各原作者，請支持原站。</p>
+</footer>
+
+<div id="lb"><span class="x">&times;</span><img alt=""></div>
+
+<script src="app.js?v=2"></script>
+</body>
+</html>

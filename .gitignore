@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# 測試與除錯產物
+.playwright-mcp/
+*.log
+data/raw/*.log
+
+# 早期未分檔的舊產物，已被 data/site/countries/ 與 clues/ 取代
+data/site/countries.json
+data/site/clues.json
+
+# 系統
+.DS_Store
+Thumbs.db
+desktop.ini

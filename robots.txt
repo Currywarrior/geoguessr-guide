@@ -1,0 +1,4 @@
+# 這是個人自用的學習筆記站，內容整理自 plonkit.net 與 geohints.com，
+# 不希望被搜尋引擎收錄而與原站競爭。
+User-agent: *
+Disallow: /

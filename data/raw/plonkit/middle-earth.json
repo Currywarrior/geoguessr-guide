@@ -1,0 +1,450 @@
+{
+  "success": true,
+  "data": {
+    "public": {
+      "_id": "middle-earth",
+      "createdAt": "2025-09-16T22:05:22.307Z",
+      "updatedAt": "2025-09-16T00:00:00.000Z",
+      "lastUpdatedBy": "",
+      "title": "Middle Earth",
+      "slug": "middle-earth",
+      "cat": [],
+      "heroImage": "/images/middle-earth/NZ-L387-Aoraki-Mount-Cook-N.jpg",
+      "headerNotes": [],
+      "steps": [
+        {
+          "kind": "tip",
+          "title": "Identifying Middle Earth",
+          "items": [
+            {
+              "kind": "centeredImage",
+              "id": "bOHG",
+              "imageUrl": "/images/middle-earth/0_miea_summarygraphic.png"
+            },
+            {
+              "kind": "tip",
+              "id": "oDml",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_landscape.png",
+                  "imageLink": "https://www.google.com/maps/@-43.5483056,170.8931944,3a,90y,3.51h,98.14t/data=!3m7!1e1!3m5!1sAF1QipPtf6VpSekspjueuykfrCvm0Q2dA6HhvlkGCvCE!2e10!3e12!7i9892!8i4946",
+                  "alt": "",
+                  "width": 0.5
+                },
+                "text": [
+                  "Most of Middle Earth has a **rugged, natural landscape**. Vegetation ranges from dense forests to wide open plains. In many regions, mountains are common."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "bK4J",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_creatures.png",
+                  "imageLink": "https://goo.gl/maps/JdDinkkmFAQdvNBx7",
+                  "alt": "",
+                  "width": 0.5
+                },
+                "text": [
+                  "Middle Earth is populated by a wide range of **fantastical creatures**.",
+                  "NOTE: While much of Middle Earth shares a striking resemblance to New Zealand, the two can often be differentiated by the fact that New Zealand does not have any living elves, dragons, orcs, or other magical creatures."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "kAkx",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_architecture.png",
+                  "imageLink": "https://www.google.se/maps/@47.6591193,8.8596724,3a,75y,313.57h,105.25t/data=!3m6!1e1!3m4!1sCgEUngJg17ob7A90ncQpHw!2e0!7i13312!8i6656!5m1!1e4",
+                  "alt": "",
+                  "width": 0.5
+                },
+                "text": [
+                  "The architecture of Middle earth has a distinct **medieval look** to it.",
+                  "NOTE: Buildings in New Zealand are much more modern."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "bDgm",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_horse.png",
+                  "imageLink": "https://goo.gl/maps/vCrTAyy73zfSjs5AA",
+                  "alt": "",
+                  "width": 0.5
+                },
+                "text": [
+                  "As there are no cars in Middle Earth, most of the imagery was captured using cameras mounted to **horses**. This is not found anywhere else."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "cosL",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Driving_side.png",
+                  "imageLink": "https://goo.gl/maps/rzxAYMdvnGKmZGUeA",
+                  "alt": "",
+                  "width": 0.5
+                },
+                "text": [
+                  "Middle Earth mostly drives on the **left**. However, this is not standardised by local governments, so there can be exceptions."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "7XA7",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Road_surface.png",
+                  "imageLink": "https://www.google.com/maps/@0.4496621,30.3851717,2a,75y,327.45h,77.63t/data=!3m7!1e1!3m5!1siyO7IrWoiziRT-4pr7LjKQ!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fpanoid%3DiyO7IrWoiziRT-4pr7LjKQ%26cb_client%3Dmaps_sv.tactile.gps%26w%3D203%26h%3D100%26yaw%3D260%26pitch%3D-20%26thumbfov%3D100!7i13312!8i6656",
+                  "alt": "",
+                  "width": 0.5
+                },
+                "text": [
+                  "You will never find asphalt roads in Middle Earth. All roads are either unpaved or have a cobblestone surface."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "Ppj5",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Tengwar.png",
+                  "imageLink": "/images/middle-earth/Tengwar.png",
+                  "alt": "",
+                  "width": 0.5
+                },
+                "text": [
+                  "A variety of different scripts are used in Middle Earth. The most common one is **Tengwar**, which can be recognized by its curvy look, with lots of flourishes and accents. Uniquely, it features triple dots."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "urHW",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/PinClipart.com_clip-art-volcano_953698.png",
+                  "imageLink": "/images/middle-earth/PinClipart.com_clip-art-volcano_953698.png",
+                  "alt": "",
+                  "width": 0.5
+                },
+                "text": [
+                  "Middle Earth’s **town entrance signs** look like this."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "OWrc",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/You_shall_not_pass.png",
+                  "imageLink": "/images/middle-earth/You_shall_not_pass.png",
+                  "alt": "",
+                  "width": 0.5
+                },
+                "text": [
+                  "This “You Shall Not Pass” road sign is unique to Middle Earth.",
+                  "NOTE: It is most common in the Mines of Moria."
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "kind": "tip",
+          "title": "Regional clues",
+          "items": [
+            {
+              "kind": "tip",
+              "id": "rEYO",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_shire.png",
+                  "imageLink": "https://www.google.com/maps/@-37.8573678,175.6801169,3a,90y,129.45h,94.54t/data=!3m7!1e1!3m5!1sAF1QipOZFQAYat2RYbqrs9Q5wVmtoyGTeUR9ZOslMwVs!2e10!3e12!7i8704!8i4352",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "Most of the Shire is situated on green, agricultural rolling hills, with a particular type of small houses built **into the ground**, commonly having very distinct **round doors**."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "JWhz",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Mordor_volcanic_soil.png",
+                  "imageLink": "https://goo.gl/maps/N8kNFEtBJARB7Csj9",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "Mordor has a volcanic landscape, with distinct **black soil**."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "Eufa",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Rohan_horses.png",
+                  "imageLink": "https://www.google.com/maps/@63.8235297,-20.9407811,3a,75y,4.35h,75.39t/data=!3m6!1e1!3m4!1su9ucZTTVmBZ2jeWkQ4sefA!2e0!7i13312!8i6656",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "While **horses and horse-riding** are the main form of transportation in most of Middle Earth, it is especially common in Rohan. This is also reflected in its flag, which prominently depicts a stylized horse."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "vw9J",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Rohan_architecture.png",
+                  "imageLink": "https://www.google.com/maps/@52.2065164,10.1109809,3a,15y,290.61h,130.27t/data=!3m6!1e1!3m4!1sRE6t9pgXcxSFu_imVaDICA!2e0!7i16384!8i8192?entry=ttu",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "Buildings in Rohan are almost always made of wood and often have thatched roofs. Uniquely, a lot of buildings have roofs with cross beams that are **shaped like horses**, reflecting the equestrian culture."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "sAXZ",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_fangorn.png",
+                  "imageLink": "https://goo.gl/maps/pbZMjfoTEGgbSa3f9",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "Fangorn forest can often be recognized by its old-looking **walking trees**."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "wbl4",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Northern_Waste_1.png",
+                  "imageLink": "https://www.google.com/maps/@?api=1&fov=133.1654378647679&heading=22.22145452173345&map_action=pano&pano=CAoSLEFGMVFpcE4teVN6U2taWEtpcTEySHl4OG9qY1BBM09PNmVmZ19Hbkd3Qk1r&pitch=9.778143551979625&viewpoint=66.695432%2C-65.282358#extra%5BloadMode%5D=latLng",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The Northern Waste region has a unique **cold **and **mountainous **landscape, which makes it very recognisable."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "7kZV",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Dead_Marshes.png",
+                  "imageLink": "https://www.google.com/maps/@56.7477745,-5.8250511,3a,75y,317.22h,92.78t/data=!3m7!1e1!3m5!1srhRC7Rr2qW6KMTAk1AZ3Ug!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fpanoid%3DrhRC7Rr2qW6KMTAk1AZ3Ug%26cb_client%3Dmaps_sv.tactile.gps%26w%3D203%26h%3D100%26yaw%3D215.7938%26pitch%3D0%26thumbfov%3D100!7i16384!8i8192",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The Dead Marshes can be recognised from the **wet landscape**, filled with **dead bushes**, and little greenery."
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "kind": "tip",
+          "title": "Spotlight",
+          "items": [
+            {
+              "kind": "tip",
+              "id": "OwZk",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_minastirith.png",
+                  "imageLink": "https://www.google.com/maps/@48.6339061,-1.5105063,3a,75y,342.26h,107.47t/data=!3m8!1e1!3m6!1sAF1QipPS-EBZDP-v3KKjnyzLMd7BCfqBpzu-kFuH6YM!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipPS-EBZDP-v3KKjnyzLMd7BCfqBpzu-kFuH6YM%3Dw203-h100-k-no-pi0-ya276.76178-ro-0-fo100!7i4608!8i2304",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The **white city** of Minas Tirith, in the eastern parts of Gondor, can be seen from afar and is easily recognizable due to its distinct shape and colour."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "ok8c",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Minas_Morgul.png",
+                  "imageLink": "https://goo.gl/maps/gTg9LFV4GGANqrSe6",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "Minas Morgul is a large fortress, situated in a dark valley near the border between Gondor and Mordor, which is typically illuminated with **green light**."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "zQRi",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/rivendell.png",
+                  "imageLink": "https://goo.gl/maps/3pBwbP7uDqT4QuX56",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The elven castle of Rivendell is located in a slim valley, surrounded by **extremely tall cliff sides** and a multitude of small waterfalls."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "liCN",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_mountdoom.png",
+                  "imageLink": "https://goo.gl/maps/2KmQmCvq32uFsFfq7",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "Mount Doom and the tower of Barad-dûr, crowned by the Eye of Sauron, can both be found in the **northwestern** part of Mordor and can often be seen from very far away."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "BJX4",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_isengard.png",
+                  "imageLink": "https://goo.gl/maps/io9ww4NDSwonLMZU9",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The tower of Isengard can be seen from afar and somewhat resembles Barad-dûr in Mordor. It can however easily be differentiated by the fact that there is **no large burning eye** at the top."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "zmFV",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/Lonely_Mountain.png",
+                  "imageLink": "https://goo.gl/maps/SynRk4DGs98SA34U9",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "Erebor is a tall, sharp and recognizable **lonely mountain** in northern Rhovanion."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "HcCF",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/middleearth_asset2.png",
+                  "imageLink": "https://www.google.se/maps/@54.488297,-0.6073117,2a,75y,76.45h,108.97t/data=!3m6!1e1!3m4!1s6V3vLLxvKvnk9ohaQNZEQg!2e0!7i13312!8i6656!5m1!1e4",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The former stronghold of the Dark Lord, Dol Guldur, is an **ancient ruin** situated northeast of Rohan. It typically has a somewhat creepy feel to it."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "rMJa",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_helmsdeep.png",
+                  "imageLink": "https://www.google.se/maps/@30.3223353,35.4518106,2a,75y,243.98h,109.6t/data=!3m6!1e1!3m4!1sTzUxJQLjQUQLo4-u3NHesA!2e0!7i13312!8i6656!5m1!1e4",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The deep, **fortified gorge** of Helm’s Deep, in western Rohan is surrounded by tall mountains, and has a small, flat wetland in front of it."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "AxMt",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/middleearth_asset1.png",
+                  "imageLink": "https://goo.gl/maps/Z4NSxVjm28CKYFMQ6",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "Lake-town is a town **built on water** in the northwestern part of the Long Lake in Rhovanion."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "Gmfm",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_moria.png",
+                  "imageLink": "https://goo.gl/maps/tZ7vQ6WdZCmhYMds6",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The mines of Moria can be recognized by its **darkness** combined with the dwarven architecture."
+                ]
+              }
+            },
+            {
+              "kind": "tip",
+              "id": "Fy1N",
+              "data": {
+                "image": {
+                  "imageUrl": "/images/middle-earth/miea_lothlorien.png",
+                  "imageLink": "https://goo.gl/maps/vaB2QiJQNuN142AP7",
+                  "alt": "",
+                  "width": 0.573
+                },
+                "text": [
+                  "The forest of Lothlórien can be recognized by the **sharp blue tint** to the coverage, combined with the extravagant elven architecture."
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "draftChangelog": []
+    }
+  }
+}
