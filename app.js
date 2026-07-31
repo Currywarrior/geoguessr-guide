@@ -46,6 +46,9 @@ function md(s) {
 
 const cname = c => zh[c.key] || zh[c.name] || c.name;
 
+// 國家 key 帶空格（united states of america），直接當 HTML id 會讓選取器出錯
+const cid = k => k.replace(/[^a-z0-9]+/gi, '-');
+
 // 原站用兩種前綴標記段落：NOTE 是補充說明（壓低一階），
 // !! 是「容易跟鄰國搞混」的對照提醒（反而要突顯）
 function para(t) {
@@ -364,10 +367,12 @@ async function viewClue(key) {
 
     ${countries.length ? `
       <div class="rule"><h2>各國實例與說明</h2><span class="count">${countries.length} 國</span></div>
+      <div class="clue-wrap">
+      <div>
       ${countries.map(k => {
         const b = byCountry[k];
         return `
-        <section class="sec">
+        <section class="sec" id="c-${cid(k)}">
           <h3><a href="#/country/${esc(k.replace(/ /g, '-'))}">${esc(zh[k] || b.name)}</a>
             <span class="count">${[b.tips.length && `${b.tips.length} 說明`, b.shots.length && `${b.shots.length} 圖`]
               .filter(Boolean).join(' · ')}</span></h3>
@@ -381,7 +386,37 @@ async function viewClue(key) {
             </article>`).join('')}
           ${b.shots.length ? `<div class="gal">${shots(b.shots, g => SUBCAT[g.source_page] || '')}</div>` : ''}
         </section>`;
-      }).join('')}` : '<p class="empty">這個類型還沒有資料</p>'}`;
+      }).join('')}
+      </div>
+      <aside class="jump">
+        <div class="jump-h">跳到國家</div>
+        <input class="jump-f" id="jf" type="search" placeholder="篩選國家" autocomplete="off">
+        <div class="jump-list" id="jl">
+          ${countries.map(k => `
+            <a data-jump="${cid(k)}" data-nm="${esc((zh[k] || byCountry[k].name).toLowerCase())} ${esc(k)}">
+              ${esc(zh[k] || byCountry[k].name)}
+              <i>${byCountry[k].tips.length || ''}${byCountry[k].tips.length && byCountry[k].shots.length ? '·' : ''}${byCountry[k].shots.length || ''}</i>
+            </a>`).join('')}
+        </div>
+      </aside>
+      </div>` : '<p class="empty">這個類型還沒有資料</p>'}`;
+
+  // 111 國的清單用滑的還是慢，加個即時篩選。中英文都比對，打 japan 或 日本 都找得到
+  const jf = $('#jf');
+  if (jf) {
+    jf.addEventListener('input', () => {
+      const t = jf.value.trim().toLowerCase();
+      let n = 0;
+      $$('#jl a').forEach(a => {
+        const hit = !t || a.dataset.nm.includes(t);
+        a.style.display = hit ? '' : 'none';
+        if (hit) n++;
+      });
+      const none = $('#jl .jump-none');
+      if (!n && !none) $('#jl').insertAdjacentHTML('beforeend', '<div class="jump-none">沒有符合的國家</div>');
+      if (n && none) none.remove();
+    });
+  }
 }
 
 // ---------------------------------------------------------------- 搜尋
@@ -466,6 +501,16 @@ function route() {
       return;
     }
 
+    // 側欄跳到某一國。不能用 href="#..." 錨點，這站是 hash 路由，改 hash 會被當成換頁
+    const jp = e.target.closest('[data-jump]');
+    if (jp) {
+      // 用瞬間跳不用 smooth：跨越上萬像素的平滑捲動要等很久，而且 smooth 在
+      // 開了減少動態效果的系統上本來就會被停用。被版首遮擋的問題交給
+      // CSS 的 scroll-margin-top 處理，比在這裡硬減一個像素值可靠
+      document.getElementById('c-' + jp.dataset.jump)?.scrollIntoView();
+      return;
+    }
+
     const img = e.target.closest('img[data-full]');
     if (img) {
       $('#lb img').src = img.dataset.full;
@@ -475,6 +520,10 @@ function route() {
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { $('#lb').classList.remove('on'); $('#qr').classList.remove('show'); }
-    if (e.key === '/' && document.activeElement !== $('#q')) { e.preventDefault(); $('#q').focus(); }
+    // 打斜線跳到搜尋框，但人在任何輸入欄位裡時不能搶焦點（側欄篩選也是輸入框）
+    if (e.key === '/' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) {
+      e.preventDefault();
+      $('#q').focus();
+    }
   });
 })();
