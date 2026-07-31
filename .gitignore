@@ -11,6 +11,9 @@ data/raw/*.log
 data/site/countries.json
 data/site/clues.json
 
+# API 金鑰（純文字放本機，絕不進 git）
+.keys/
+
 # 系統
 .DS_Store
 Thumbs.db
