@@ -69,6 +69,50 @@ main{max-width:1180px;margin:0 auto;padding:26px 20px 80px;position:relative;z-i
 .rule h2{font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
 .rule::after{content:"";flex:1;height:1px;background:var(--line)}
 
+/* ---------- 首頁開場 ---------- */
+.hero{display:grid;gap:28px;grid-template-columns:1fr 380px;align-items:stretch;margin-bottom:4px}
+/* 左欄撐滿並把統計壓到底，否則標題只有三行、右邊題目卡卻很高，下面會空一大塊 */
+.hero-l{display:flex;flex-direction:column;justify-content:space-between}
+.hero-t{font-size:38px;line-height:1.15;margin-bottom:12px}
+.hero-t em{font-style:normal;color:var(--gold)}
+.hero-s{color:var(--dim);max-width:520px;margin-bottom:22px}
+.stats{display:flex;gap:32px;flex-wrap:wrap}
+.stats b{
+  display:block; font-family:Georgia,serif; font-size:30px; line-height:1.1;
+  font-variant-numeric:tabular-nums;
+}
+.stats span{
+  display:block; font-size:11px; letter-spacing:.14em; color:var(--faint);
+  text-transform:uppercase; margin-top:3px;
+}
+/* 猜國家小卡：一進站就有事情可做，不是只有一整面卡片牆 */
+.quiz{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.quiz-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px}
+.quiz-k{font-size:11px;letter-spacing:.1em;color:var(--bg);background:var(--gold);padding:2px 8px;border-radius:2px}
+.quiz-q{font-family:Georgia,"Noto Serif TC",serif;font-size:17px}
+.quiz img.shot-img{
+  width:100%; aspect-ratio:16/10; object-fit:cover; display:block;
+  border:1px solid var(--line); border-radius:2px; background:var(--panel2);
+}
+.quiz-a{
+  display:flex; align-items:center; gap:10px; margin-top:10px; padding:9px 11px;
+  background:var(--panel2); border:1px solid var(--line);
+  border-left:2px solid var(--gold); border-radius:2px;
+}
+.quiz-a .flag{width:30px;height:21px;object-fit:contain;border:1px solid var(--line);border-radius:2px}
+.quiz-a b{font-size:17px}
+.quiz-a i{margin-left:auto;font-style:normal;font-size:12px;color:var(--faint)}
+.quiz-a:hover i{color:var(--gold)}
+.quiz-btns{display:flex;gap:8px;margin-top:10px}
+.quiz-btns button{
+  flex:1; padding:8px 10px; font:inherit; font-size:13px; cursor:pointer;
+  color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:var(--radius);
+}
+.quiz-btns button:hover{color:var(--gold);border-color:var(--gold)}
+.quiz-load{color:var(--faint);font-size:13px;padding:44px 0;text-align:center}
+@media(max-width:820px){.hero{grid-template-columns:1fr}.hero-t{font-size:31px}}
+
 /* ---------- 卡片網格 ---------- */
 .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(216px,1fr))}
 .card{
@@ -204,6 +248,6 @@ footer a:hover{color:var(--gold)}
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=9"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>

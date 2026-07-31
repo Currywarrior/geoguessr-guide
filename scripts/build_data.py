@@ -505,6 +505,36 @@ def main():
         (kdir / f"{key}.json").write_text(
             json.dumps(v, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
+    # 首頁「這是哪一國」的題庫。排除兩種不適合出題的：旗幟類（圖片本身就是答案）、
+    # 沒有完整攻略的國家（猜對了點進去也沒東西可看）。每國最多 6 題，且刻意輪流
+    # 從不同線索類型抽，否則 6 題會全是 Google 拍攝載具（那類圖最多）。
+    by_c = {}
+    for ck, cv in clues.items():
+        if ck == "flags":
+            continue
+        for g in cv["gallery"]:
+            c = g.get("country")
+            if c and g.get("image") and not countries.get(c, {}).get("no_guide"):
+                by_c.setdefault(c, {}).setdefault(ck, []).append([g["image"], cv["zh"]])
+
+    quiz = []
+    for c, per_clue in sorted(by_c.items()):
+        picks, kinds, i = [], sorted(per_clue), 0
+        while len(picks) < 6:
+            added = False
+            for t in kinds:
+                if i < len(per_clue[t]):
+                    picks.append(per_clue[t][i])
+                    added = True
+                    if len(picks) >= 6:
+                        break
+            if not added:
+                break
+            i += 1
+        quiz += [[img, c, kind] for img, kind in picks]
+    (OUT / "quiz.json").write_text(
+        json.dumps(quiz, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
     # 國旗有兩個來源：geohints 的 flags 圖鑑（220 面），以及補下載的
     # assets/img/flags/（38 面，都是 geohints 沒收的次國家層級地區，
     # 例如阿拉斯加、亞速爾群島；屬地沒有自己旗幟的就用宗主國旗）

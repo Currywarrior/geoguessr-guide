@@ -102,6 +102,75 @@ const FREQ_RANK = Object.fromEntries(FREQ_ORDER.map((k, i) => [k, i]));
 const flagImg = c => c.flag
   ? `<img class="flag" src="${IMG}${c.flag}" alt="" loading="lazy">` : '';
 
+// ---------------------------------------------------------------- 首頁猜國家
+
+// 題庫是 build_data.py 產的 [圖片, 國家key, 線索類型]，每國最多 6 題、46KB，
+// 只在首頁第一次渲染時載一次。
+let quizPool = null;
+let quizCur = null;
+
+function pickQuiz() {
+  if (!quizPool || !quizPool.length) return;
+  let next;
+  do {
+    next = quizPool[Math.floor(Math.random() * quizPool.length)];
+  } while (quizPool.length > 1 && next === quizCur);  // 不要連兩題同一張
+  quizCur = next;
+}
+
+function renderQuiz(reveal) {
+  const el = $('#quiz');
+  if (!el || !quizCur) return;
+  const [img, key, kind] = quizCur;
+  const c = index.countries.find(x => x.key === key);
+  if (!c) { pickQuiz(); renderQuiz(false); return; }
+
+  el.innerHTML = `
+    <div class="quiz-h"><span class="quiz-k">${esc(kind)}</span><span class="quiz-q">這是哪一國？</span></div>
+    <img class="shot-img" src="${IMG}${esc(img)}" alt="" data-full="${IMG}${esc(img)}">
+    ${reveal ? `
+      <a class="quiz-a" href="#/country/${esc(c.file)}">
+        ${c.flag ? `<img class="flag" src="${IMG}${esc(c.flag)}" alt="">` : ''}
+        <b>${esc(cname(c))}</b><i>看完整攻略 →</i>
+      </a>` : ''}
+    <div class="quiz-btns">
+      ${reveal ? '' : '<button type="button" data-quiz="reveal">揭曉答案</button>'}
+      <button type="button" data-quiz="next">${reveal ? '再來一題' : '換一題'}</button>
+    </div>`;
+}
+
+async function initQuiz() {
+  try {
+    quizPool = quizPool || await load('quiz.json');
+  } catch {
+    $('#quiz')?.remove();   // 題庫載不到就整塊拿掉，不要留一個「載入中」卡在那裡
+    return;
+  }
+  pickQuiz();
+  renderQuiz(false);
+}
+
+function heroHtml(withGuide) {
+  const tips = index.countries.reduce((a, c) => a + c.tips, 0);
+  const gal = index.countries.reduce((a, c) => a + c.gallery, 0);
+  return `
+    <section class="hero">
+      <div class="hero-l">
+        <div>
+        <h1 class="hero-t">GeoGuessr <em>線索圖鑑</em></h1>
+        <p class="hero-s">整合 plonkit 與 geohints 兩站的辨識線索，${withGuide} 國完整攻略，全站繁體中文。
+        賽前複習用「按國家」，遊戲中看到沒見過的東西就切「按線索」反查。</p>
+        </div>
+        <div class="stats">
+          <div><b>${index.countries.length}</b><span>國家與地區</span></div>
+          <div><b>${tips}</b><span>攻略說明</span></div>
+          <div><b>${gal}</b><span>線索圖鑑</span></div>
+        </div>
+      </div>
+      <div class="quiz" id="quiz"><div class="quiz-load">題目載入中…</div></div>
+    </section>`;
+}
+
 function viewCountries() {
   const withGuide = index.countries.filter(c => !c.no_guide);
   const groups = {};
@@ -113,8 +182,7 @@ function viewCountries() {
   const thin = index.countries.filter(c => c.no_guide);
 
   $('#v-countries').innerHTML = `
-    <p class="lead">收錄 ${withGuide.length} 個國家與地區的完整辨識攻略，共 ${index.countries.reduce((a, c) => a + c.tips, 0)} 條線索說明。
-    賽前複習用這裡，遊戲中反查請切到「按線索」。</p>
+    ${heroHtml(withGuide.length)}
     ${keys.map(k => `
       <div class="rule"><h2>${CONTINENT_ZH[k] || k}</h2><span class="count">${groups[k].length}</span></div>
       <div class="grid">
@@ -130,6 +198,8 @@ function viewCountries() {
     <div class="grid">
       ${thin.map(c => `<a class="card thin" href="#/country/${c.file}">${flagImg(c)}<div class="nm">${esc(cname(c))}</div></a>`).join('')}
     </div>`;
+
+  initQuiz();
 }
 
 // ---------------------------------------------------------------- 線索一覽
@@ -375,6 +445,15 @@ function route() {
   $('#q').addEventListener('input', e => search(e.target.value));
   document.addEventListener('click', e => {
     if (!e.target.closest('.search')) $('#qr').classList.remove('show');
+
+    // 首頁題目的按鈕。用委派是因為首頁每次切回來都會整塊重畫，直接綁會掉
+    const qb = e.target.closest('[data-quiz]');
+    if (qb) {
+      if (qb.dataset.quiz === 'next') pickQuiz();
+      renderQuiz(qb.dataset.quiz === 'reveal');
+      return;
+    }
+
     const img = e.target.closest('img[data-full]');
     if (img) {
       $('#lb img').src = img.dataset.full;
