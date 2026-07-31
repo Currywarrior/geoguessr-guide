@@ -436,6 +436,64 @@ async function viewClue(key) {
 
 // ---------------------------------------------------------------- 搜尋
 
+// 內文索引 1MB，只在第一次真的要搜內文時才載，不拖慢首頁
+let corpus = null;
+let corpusLoading = null;
+let searchSeq = 0;   // 打字很快時會有多個搜尋同時在跑，用序號丟掉過期的結果
+
+function snippet(text, t) {
+  const i = text.toLowerCase().indexOf(t);
+  if (i < 0) return esc(text.slice(0, 70));
+  const from = Math.max(0, i - 24);
+  const s = (from ? '…' : '') + text.slice(from, i) ;
+  return esc(s) + '<mark>' + esc(text.substr(i, t.length)) + '</mark>'
+    + esc(text.slice(i + t.length, i + t.length + 46)) + '…';
+}
+
+function bodyHits(t) {
+  const hits = [];
+  for (const [key, text] of corpus) {
+    if (text.toLowerCase().includes(t)) {
+      hits.push({ key, text });
+      // 掃完整份才排得出優先序，但命中太多時排序沒意義，設個上限保護打字延遲
+      if (hits.length >= 300) break;
+    }
+  }
+  // 常考的國家排前面，否則搜「路樁」第一筆會是安道爾而不是德國
+  hits.sort((a, b) => (FREQ_RANK[a.key] ?? 999) - (FREQ_RANK[b.key] ?? 999));
+  // 每國只留一筆。美國光路樁就有 12 條說明，不限制的話 8 筆全是美國，
+  // 而搜尋要的是跨國比較不是同一國的細節
+  const seen = new Set();
+  return hits.filter(h => !seen.has(h.key) && seen.add(h.key)).slice(0, 8);
+}
+
+async function searchBody(t, seq) {
+  if (!corpus) {
+    corpusLoading ||= load('search.json').catch(() => []);
+    corpus = await corpusLoading;
+  }
+  if (seq !== searchSeq) return;   // 使用者已經改字了，這次結果作廢
+
+  const box = $('#qr');
+  const old = box.querySelector('.grp-body');
+  if (old) old.remove();
+  const hits = bodyHits(t);
+  if (!hits.length) {
+    // 國名與線索名也沒中的話，這時才是真的什麼都沒有
+    if (!box.querySelector('a')) box.innerHTML = '<a>沒有符合的結果</a>';
+    return;
+  }
+
+  box.insertAdjacentHTML('beforeend', `<div class="grp-body">
+    <div class="grp">內文 ${hits.length >= 8 ? '常考的前 8 筆' : hits.length + ' 筆'}</div>
+    ${hits.map(h => {
+      const c = index.countries.find(x => x.key === h.key);
+      return `<a href="#/country/${esc(c ? c.file : h.key.replace(/ /g, '-'))}">
+        <b>${esc(c ? cname(c) : h.key)}</b>
+        <span class="sn">${snippet(h.text, t)}</span></a>`;
+    }).join('')}</div>`);
+}
+
 function search(term) {
   const box = $('#qr');
   const t = term.trim().toLowerCase();
@@ -455,10 +513,20 @@ function search(term) {
     }
   }
 
+  const seq = ++searchSeq;
   box.innerHTML = hits.length
-    ? hits.slice(0, 24).map(h => `<a href="${h.href}">${esc(h.name)}<span class="k">${esc(h.kind)}</span></a>`).join('')
-    : '<a>沒有符合的結果</a>';
+    ? hits.slice(0, 12).map(h => `<a href="${h.href}">${esc(h.name)}<span class="k">${esc(h.kind)}</span></a>`).join('')
+    : '';
   box.classList.add('show');
+
+  // 兩個字以上才搜內文，一個字命中太多沒有意義
+  if (t.length >= 2) {
+    if (!corpus) box.insertAdjacentHTML('beforeend',
+      '<div class="grp-body"><div class="grp">內文搜尋中…</div></div>');
+    searchBody(t, seq);
+  } else if (!hits.length) {
+    box.innerHTML = '<a>沒有符合的結果</a>';
+  }
 }
 
 // ---------------------------------------------------------------- 路由

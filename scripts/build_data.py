@@ -524,6 +524,27 @@ def main():
         (kdir / f"{key}.json").write_text(
             json.dumps(v, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
+    # 內文全文搜尋的索引。每條說明一筆 [國家key, 純文字]，1MB 左右，
+    # 前端只在第一次搜尋時載入。連結只留顯示文字、粗體與斜體標記拿掉，
+    # 網址對搜尋沒有用處又佔掉一成體積，留著還會讓 goo.gl 這種字串誤中。
+    def flatten(t):
+        t = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", t)
+        t = t.replace("**", "").replace("_", "")
+        return re.sub(r"\s+", " ", t).strip()
+
+    search_idx = []
+    for key, c in countries.items():
+        for s in c.get("sections") or []:
+            for it in s["items"]:
+                zh = it.get("text_zh") or []
+                txt = " ".join(zh[i] if i < len(zh) and zh[i] else t
+                               for i, t in enumerate(it.get("text") or []))
+                txt = flatten(txt)
+                if txt:
+                    search_idx.append([key, txt])
+    (OUT / "search.json").write_text(
+        json.dumps(search_idx, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
     # 首頁「這是哪一國」的題庫。排除兩種不適合出題的：旗幟類（圖片本身就是答案）、
     # 沒有完整攻略的國家（猜對了點進去也沒東西可看）。每國最多 6 題，且刻意輪流
     # 從不同線索類型抽，否則 6 題會全是 Google 拍攝載具（那類圖最多）。

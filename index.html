@@ -71,6 +71,15 @@ nav a.on{color:var(--bg);background:var(--gold);border-color:var(--gold);font-we
 .results a{display:block;padding:8px 12px;border-bottom:1px solid var(--line);font-size:14px}
 .results a:hover{background:var(--panel)}
 .results .k{color:var(--faint);font-size:12px;margin-left:6px}
+/* 內文搜尋結果：國名一行、命中的句子一行，命中的字用金色標出來 */
+.results .grp{
+  padding:6px 12px; font-size:11px; letter-spacing:.12em; color:var(--gold);
+  background:var(--panel); border-bottom:1px solid var(--line);
+}
+.results .grp-body a{padding:8px 12px}
+.results .grp-body b{display:block;font-size:14px;font-weight:600}
+.results .sn{display:block;font-size:12px;color:var(--dim);line-height:1.6;margin-top:2px}
+.results mark{background:transparent;color:var(--gold);font-weight:600}
 
 /* ---------- 版面 ---------- */
 main{max-width:1180px;margin:0 auto;padding:26px 20px 80px;position:relative;z-index:1}
@@ -312,6 +321,6 @@ footer a:hover{color:var(--gold)}
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=19"></script>
+<script src="app.js?v=22"></script>
 </body>
 </html>
