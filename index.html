@@ -221,29 +221,57 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 /* ---------- 線索頁的跳轉側欄 ---------- */
 /* 版首是 sticky 的，跳過去時要留出它的高度，否則國名會被蓋住 */
 .sec[id]{scroll-margin-top:78px}
-.clue-wrap{display:grid;grid-template-columns:1fr 210px;gap:26px;align-items:start}
+.clue-wrap{display:grid;grid-template-columns:216px 1fr;gap:30px;align-items:start}
 /* grid 子項的預設最小寬度是內容寬度，而裡面的圖鑑又是 auto-fill 網格，
    兩者會互相撐開變成所有圖排成一列、整頁橫向溢出上萬像素。min-width:0 才收得住 */
 .clue-wrap > *{min-width:0}
 .jump{position:sticky;top:78px;display:flex;flex-direction:column;max-height:calc(100vh - 104px)}
 .jump-h{
+  display:flex; justify-content:space-between; align-items:baseline;
   font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold);
-  padding-bottom:7px; border-bottom:1px solid var(--line); margin-bottom:4px;
+  padding-bottom:8px; border-bottom:1px solid var(--line);
 }
+.jump-h em{font-style:normal;color:var(--faint);letter-spacing:0}
 .jump-f{
-  width:100%; margin:6px 0; padding:5px 8px; font:inherit; font-size:13px;
-  color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+  width:100%; margin:8px 0 4px; padding:6px 9px; font:inherit; font-size:13px;
+  color:var(--ink); background:var(--panel); border:1px solid var(--line);
+  border-radius:var(--radius); transition:border-color .14s;
 }
 .jump-f:focus{outline:none;border-color:var(--gold)}
-.jump-list{overflow:auto;padding-right:4px}
+.jump-f::placeholder{color:var(--faint)}
+/* 細捲軸，預設那條在深色底上又粗又亮很搶戲 */
+.jump-list{overflow:auto;padding-right:2px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.jump-list::-webkit-scrollbar{width:6px}
+.jump-list::-webkit-scrollbar-track{background:transparent}
+.jump-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.jump-list::-webkit-scrollbar-thumb:hover{background:var(--faint)}
 .jump-list a{
-  display:flex; justify-content:space-between; gap:8px; align-items:baseline;
-  padding:4px 6px; font-size:14px; color:var(--dim); border-left:2px solid transparent;
-  cursor:pointer;
+  position:relative; display:flex; justify-content:space-between; gap:8px;
+  align-items:baseline; padding:5px 8px 5px 11px; font-size:14px; color:var(--dim);
+  cursor:pointer; border-radius:2px;
+  transition:color .14s, background .14s, padding-left .14s;
 }
-.jump-list a:hover{color:var(--ink);background:var(--panel);border-left-color:var(--gold)}
+/* 金色標記從上往下展開，不是整條硬切換 */
+.jump-list a::before{
+  content:""; position:absolute; left:0; top:5px; bottom:5px; width:2px;
+  background:var(--gold); transform:scaleY(0); transform-origin:top;
+  transition:transform .18s ease-out;
+}
+.jump-list a:hover{color:var(--ink);background:var(--panel);padding-left:15px}
+.jump-list a:hover::before,.jump-list a.on::before{transform:scaleY(1)}
+.jump-list a.on{color:var(--gold);background:var(--panel)}
 .jump-list a i{font-style:normal;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+.jump-list a.on i{color:var(--gold);opacity:.8}
 .jump-none{color:var(--faint);font-size:13px;padding:8px 6px}
+/* 篩選後剩下的項目淡入，直接跳出來會覺得畫面在閃 */
+@keyframes jin{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
+.jump-list.filtered a{animation:jin .16s ease-out both}
+/* 跳過去之後目標區塊亮一下，否則瞬間跳完不知道自己落在哪 */
+@keyframes land{from{background:rgba(201,162,39,.10)}to{background:transparent}}
+.sec.land{animation:land 1.2s ease-out}
+@media(prefers-reduced-motion:reduce){
+  .jump-list a,.jump-list a::before,.jump-list.filtered a,.sec.land{transition:none;animation:none}
+}
 /* 窄螢幕改成頂部橫向捲動的國家列，側欄在手機上會把內容擠爛 */
 @media(max-width:900px){
   .clue-wrap{grid-template-columns:1fr}
@@ -321,6 +349,6 @@ footer a:hover{color:var(--gold)}
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=22"></script>
+<script src="app.js?v=25"></script>
 </body>
 </html>

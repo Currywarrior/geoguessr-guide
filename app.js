@@ -80,6 +80,63 @@ const CONTINENT_ZH = {
   'Oceania': '大洋洲', 'Antarctica': '南極', 'General Guide': '通用指南',
 };
 
+// 捲到哪一國，側欄就高亮哪一國。
+// 沒有用 IntersectionObserver：一次捲很遠時會同時觸發好幾個區塊，
+// 事件順序不保證是由上而下，取最後一筆會標錯（實測捲到法國卻標日本）。
+// 直接算「目前捲動位置落在第幾個區塊」才不會錯。
+// 每次都重新量 offsetTop 是因為圖片是延遲載入的，載入後版面高度會變。
+let secCleanup = null;
+
+function watchSections() {
+  secCleanup?.();
+  secCleanup = null;
+
+  const list = $('#jl');
+  const secs = $$('.sec[id]');
+  if (!list || !secs.length) return;
+  const links = new Map($$('#jl a').map(a => [a.dataset.jump, a]));
+
+  let cur = -1, ticking = false;
+
+  const apply = () => {
+    ticking = false;
+    const y = window.scrollY + 96;   // 版首高度再多留一點，讓標題進來才算數
+    let i = 0;
+    while (i + 1 < secs.length && secs[i + 1].offsetTop <= y) i++;
+    if (i === cur) return;
+    cur = i;
+
+    $$('#jl a.on').forEach(a => a.classList.remove('on'));
+    const link = links.get(secs[i].id.replace(/^c-/, ''));
+    if (!link) return;
+    link.classList.add('on');
+    // 高亮的項目跑到清單可視範圍外時，把清單自己捲過去
+    const top = link.offsetTop;
+    if (top < list.scrollTop || top + link.offsetHeight > list.scrollTop + list.clientHeight) {
+      list.scrollTop = top - list.clientHeight / 2;
+    }
+  };
+
+  const onScroll = () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(apply); }
+  };
+
+  // 圖片是延遲載入的，捲過去之後圖片才載入、版面被撐高，區塊位置整個位移，
+  // 但這時不會有捲動事件所以不會重算，高亮就會停在錯的國家。
+  // 監聽內容高度變化補上這一段。
+  const ro = new ResizeObserver(onScroll);
+  ro.observe(list.closest('.clue-wrap'));
+
+  apply();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  secCleanup = () => {
+    ro.disconnect();
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('resize', onScroll);
+  };
+}
+
 // geohints 沒有替每張圖標名稱，唯一能還原的脈絡是它來自哪個子頁。
 // 商家品牌那類混了啤酒與郵政兩種完全不同的東西，不標出來只看圖真的認不出在比什麼。
 const SUBCAT = {
@@ -383,6 +440,17 @@ async function viewClue(key) {
     ${countries.length ? `
       <div class="rule"><h2>各國實例與說明</h2><span class="count">${countries.length} 國</span></div>
       <div class="clue-wrap">
+      <aside class="jump">
+        <div class="jump-h">跳到國家<em>${countries.length}</em></div>
+        <input class="jump-f" id="jf" type="search" placeholder="篩選國家" autocomplete="off">
+        <div class="jump-list" id="jl">
+          ${countries.map(k => `
+            <a data-jump="${cid(k)}" data-nm="${esc((zh[k] || byCountry[k].name).toLowerCase())} ${esc(k)}">
+              ${esc(zh[k] || byCountry[k].name)}
+              <i>${byCountry[k].tips.length || ''}${byCountry[k].tips.length && byCountry[k].shots.length ? '·' : ''}${byCountry[k].shots.length || ''}</i>
+            </a>`).join('')}
+        </div>
+      </aside>
       <div>
       ${countries.map(k => {
         const b = byCountry[k];
@@ -403,21 +471,11 @@ async function viewClue(key) {
         </section>`;
       }).join('')}
       </div>
-      <aside class="jump">
-        <div class="jump-h">跳到國家</div>
-        <input class="jump-f" id="jf" type="search" placeholder="篩選國家" autocomplete="off">
-        <div class="jump-list" id="jl">
-          ${countries.map(k => `
-            <a data-jump="${cid(k)}" data-nm="${esc((zh[k] || byCountry[k].name).toLowerCase())} ${esc(k)}">
-              ${esc(zh[k] || byCountry[k].name)}
-              <i>${byCountry[k].tips.length || ''}${byCountry[k].tips.length && byCountry[k].shots.length ? '·' : ''}${byCountry[k].shots.length || ''}</i>
-            </a>`).join('')}
-        </div>
-      </aside>
       </div>` : '<p class="empty">這個類型還沒有資料</p>'}`;
 
   // 111 國的清單用滑的還是慢，加個即時篩選。中英文都比對，打 japan 或 日本 都找得到
   const jf = $('#jf');
+  const jl = $('#jl');
   if (jf) {
     jf.addEventListener('input', () => {
       const t = jf.value.trim().toLowerCase();
@@ -428,10 +486,15 @@ async function viewClue(key) {
         if (hit) n++;
       });
       const none = $('#jl .jump-none');
-      if (!n && !none) $('#jl').insertAdjacentHTML('beforeend', '<div class="jump-none">沒有符合的國家</div>');
+      if (!n && !none) jl.insertAdjacentHTML('beforeend', '<div class="jump-none">沒有符合的國家</div>');
       if (n && none) none.remove();
+      // 移除再加回去才會重新播動畫，不然打第二個字時剩下的項目是硬跳出來的
+      jl.classList.remove('filtered');
+      if (t) { void jl.offsetWidth; jl.classList.add('filtered'); }
     });
   }
+
+  watchSections();
 }
 
 // ---------------------------------------------------------------- 搜尋
@@ -537,6 +600,7 @@ function route() {
 
   $$('.view').forEach(v => v.classList.remove('on'));
   $$('nav a').forEach(a => a.classList.remove('on'));
+  secCleanup?.();   // 離開線索頁就把捲動監聽拆掉，別留著算已經被換掉的節點
 
   if (seg === 'country' && arg) {
     $('#v-country').classList.add('on');
@@ -590,7 +654,14 @@ function route() {
       // 用瞬間跳不用 smooth：跨越上萬像素的平滑捲動要等很久，而且 smooth 在
       // 開了減少動態效果的系統上本來就會被停用。被版首遮擋的問題交給
       // CSS 的 scroll-margin-top 處理，比在這裡硬減一個像素值可靠
-      document.getElementById('c-' + jp.dataset.jump)?.scrollIntoView();
+      const sec = document.getElementById('c-' + jp.dataset.jump);
+      if (sec) {
+        sec.scrollIntoView();
+        // 亮一下，否則瞬間跳完不知道自己落在哪。移除再加回去才會重播動畫
+        sec.classList.remove('land');
+        void sec.offsetWidth;
+        sec.classList.add('land');
+      }
       return;
     }
 
