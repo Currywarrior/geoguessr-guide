@@ -67,6 +67,10 @@ const CONTINENT_ZH = {
   'Oceania': '大洋洲', 'Antarctica': '南極', 'General Guide': '通用指南',
 };
 
+// 國旗小標。alt 留空是刻意的：旁邊就是國名，讓螢幕閱讀器念兩次反而吵
+const flagImg = c => c.flag
+  ? `<img class="flag" src="${IMG}${c.flag}" alt="" loading="lazy">` : '';
+
 function viewCountries() {
   const withGuide = index.countries.filter(c => !c.no_guide);
   const groups = {};
@@ -85,6 +89,7 @@ function viewCountries() {
       <div class="grid">
         ${groups[k].map(c => `
           <a class="card" href="#/country/${c.file}">
+            ${flagImg(c)}
             <div class="nm">${esc(cname(c))}</div>
             <div class="meta">${c.tips} 條說明${c.gallery ? ` · ${c.gallery} 張圖鑑` : ''}</div>
           </a>`).join('')}
@@ -92,7 +97,7 @@ function viewCountries() {
     <div class="rule"><h2>僅有硬線索</h2><span class="count">${thin.length}</span></div>
     <p class="lead">這些國家沒有完整攻略，但仍可查行車方向、電話區碼、網域、貨幣等可直接鎖定答案的硬線索。</p>
     <div class="grid">
-      ${thin.map(c => `<a class="card thin" href="#/country/${c.file}"><div class="nm">${esc(cname(c))}</div></a>`).join('')}
+      ${thin.map(c => `<a class="card thin" href="#/country/${c.file}">${flagImg(c)}<div class="nm">${esc(cname(c))}</div></a>`).join('')}
     </div>`;
 }
 

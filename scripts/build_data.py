@@ -505,6 +505,16 @@ def main():
         (kdir / f"{key}.json").write_text(
             json.dumps(v, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
+    # 國旗有兩個來源：geohints 的 flags 圖鑑（220 面），以及補下載的
+    # assets/img/flags/（38 面，都是 geohints 沒收的次國家層級地區，
+    # 例如阿拉斯加、亞速爾群島；屬地沒有自己旗幟的就用宗主國旗）
+    flag_map = {}
+    for it in gallery.get("flags", []):
+        if it.get("country") and it.get("image"):
+            flag_map.setdefault(it["country"], it["image"])
+    for f in sorted((ROOT / "assets" / "img" / "flags").glob("*.svg")):
+        flag_map.setdefault(f.stem.replace("_", " "), f"flags/{f.name}")
+
     index = {
         "countries": [
             {
@@ -516,6 +526,7 @@ def main():
                 "tips": c.get("tip_count", 0),
                 "gallery": sum(len(v) for v in (c.get("gallery") or {}).values()),
                 "no_guide": c.get("no_guide", False),
+                "flag": flag_map.get(k, ""),
             }
             for k, c in sorted(countries.items(), key=lambda x: x[1]["name"])
         ],
