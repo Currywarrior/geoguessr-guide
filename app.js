@@ -76,6 +76,28 @@ const CONTINENT_ZH = {
   'Oceania': '大洋洲', 'Antarctica': '南極', 'General Guide': '通用指南',
 };
 
+// 線索頁的國家排序依據：GeoGuessr 世界地圖裡的出現頻率，大致跟街景道路覆蓋量成正比。
+// 這是人工判斷不是官方數據，官方沒有公布出題機率；資料裡的攻略條數也不能拿來替代
+// （吉爾吉斯、納米比亞內容多但很少出現，只是特徵獨特所以 plonkit 寫得詳細）。
+// 沒列到的國家排在後面，再依該線索的資料量多寡排。順序覺得不對直接調這份清單。
+const FREQ_ORDER = [
+  'united states of america', 'brazil', 'russia', 'japan', 'france', 'canada',
+  'australia', 'united kingdom', 'spain', 'italy', 'mexico', 'argentina',
+  'south africa', 'indonesia', 'poland', 'thailand', 'germany', 'sweden',
+  'finland', 'norway', 'turkey', 'chile', 'peru', 'colombia', 'philippines',
+  'malaysia', 'new zealand', 'netherlands', 'romania', 'czechia', 'portugal',
+  'greece', 'hungary', 'bulgaria', 'denmark', 'belgium', 'austria', 'switzerland',
+  'ireland', 'india', 'taiwan', 'south korea', 'ukraine', 'kenya', 'nigeria',
+  'ghana', 'senegal', 'botswana', 'bangladesh', 'sri lanka', 'israel and the west bank',
+  'jordan', 'united arab emirates', 'singapore', 'hong kong', 'estonia', 'latvia',
+  'lithuania', 'slovakia', 'slovenia', 'croatia', 'serbia', 'iceland', 'ecuador',
+  'bolivia', 'uruguay', 'guatemala', 'dominican republic', 'costa rica', 'panama',
+  'cambodia', 'laos', 'vietnam', 'mongolia', 'kazakhstan', 'kyrgyzstan', 'nepal',
+  'pakistan', 'tunisia', 'egypt', 'uganda', 'tanzania', 'rwanda', 'eswatini',
+  'lesotho', 'namibia', 'madagascar',
+];
+const FREQ_RANK = Object.fromEntries(FREQ_ORDER.map((k, i) => [k, i]));
+
 // 國旗小標。alt 留空是刻意的：旁邊就是國名，讓螢幕閱讀器念兩次反而吵
 const flagImg = c => c.flag
   ? `<img class="flag" src="${IMG}${c.flag}" alt="" loading="lazy">` : '';
@@ -235,8 +257,15 @@ async function viewClue(key) {
   });
   c.tips.forEach(t => bucket(t.country, t.country_name).tips.push(t));
 
-  const countries = Object.keys(byCountry)
-    .sort((a, b) => (zh[a] || byCountry[a].name).localeCompare(zh[b] || byCountry[b].name, 'zh-Hant'));
+  // 常考的排前面；同一級再看該線索的資料量，最後才用中文名收尾確保順序穩定
+  const countries = Object.keys(byCountry).sort((a, b) => {
+    const fa = FREQ_RANK[a] ?? 999, fb = FREQ_RANK[b] ?? 999;
+    if (fa !== fb) return fa - fb;
+    const va = byCountry[a].tips.length + byCountry[a].shots.length;
+    const vb = byCountry[b].tips.length + byCountry[b].shots.length;
+    if (va !== vb) return vb - va;
+    return (zh[a] || byCountry[a].name).localeCompare(zh[b] || byCountry[b].name, 'zh-Hant');
+  });
 
   el.innerHTML = `
     <div class="page-head">
@@ -245,7 +274,7 @@ async function viewClue(key) {
       <div class="sub">${esc(c.en)} · ${c.gallery_count} 張圖鑑 · ${c.tip_count} 條說明</div>
     </div>
 
-    ${countries.length ? '<p class="lead">每一國先看文字說明抓判斷重點，再對照下方的實例照片。</p>' : ''}
+    ${countries.length ? '<p class="lead">各國依常出現的程度排序，愈前面愈值得先記。每一國先看文字說明抓判斷重點，再對照下方的實例照片。</p>' : ''}
 
     ${generic.length ? `
       <div class="rule"><h2>通用款式</h2><span class="count">${generic.length}</span></div>
