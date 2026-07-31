@@ -501,6 +501,25 @@ def main():
         c["key"] = key  # 前端要靠它查中譯，slug 與 key 未必相同（united-states / united states of america）
         (cdir / f"{key.replace(' ', '-')}.json").write_text(
             json.dumps(c, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    # 線索導言是人工寫的（data/clue_intro.json），不是爬來的。
+    # 原站有好幾類只有圖片沒有半句說明（郵筒 279 張圖只有 4 條說明、
+    # 商家品牌 189 張圖 0 條），光看圖不知道該比什麼，導言就是補這個洞。
+    # 必須在寫檔之前併進去，否則寫出去的線索檔不會有 intro。
+    intro_src = ROOT / "data" / "clue_intro.json"
+    intros = {}
+    if intro_src.exists():
+        intros = {k: v for k, v in
+                  json.loads(intro_src.read_text(encoding="utf-8")).items()
+                  if not k.startswith("_")}
+        # street_suffix 與 years 是速查欄的分類不是線索類型，索引本來就會濾掉，不用寫導言
+        missing = sorted(k for k, v in clues.items()
+                         if k not in intros and (v["gallery_count"] or v["tip_count"]))
+        if missing:
+            print(f"注意：這些線索類型還沒寫導言：{'、'.join(missing)}")
+    for k, v in clues.items():
+        if k in intros:
+            v["intro"] = intros[k]
+
     for key, v in clues.items():
         (kdir / f"{key}.json").write_text(
             json.dumps(v, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
@@ -567,6 +586,7 @@ def main():
                 "zh": v["zh"],
                 "gallery": v["gallery_count"],
                 "tips": v["tip_count"],
+                "lead": (v.get("intro") or {}).get("lead", ""),
             }
             for k, v in sorted(clues.items(), key=lambda x: -(x[1]["gallery_count"] + x[1]["tip_count"]))
             if v["gallery_count"] or v["tip_count"]

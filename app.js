@@ -224,8 +224,9 @@ function viewClues() {
     <div class="rule"><h2>線索類型</h2><span class="count">${index.clues.length}</span></div>
     <div class="grid">
       ${index.clues.map(c => `
-        <a class="card" href="#/clue/${c.key}">
+        <a class="card clue-card" href="#/clue/${c.key}">
           <div class="nm">${esc(c.zh)}</div>
+          ${c.lead ? `<div class="cl">${esc(c.lead)}</div>` : ''}
           <div class="meta">${c.gallery ? `${c.gallery} 張圖鑑` : ''}${c.gallery && c.tips ? ' · ' : ''}${c.tips ? `${c.tips} 條說明` : ''}</div>
         </a>`).join('')}
     </div>`;
@@ -357,9 +358,13 @@ async function viewClue(key) {
       <div class="sub">${esc(c.en)} · ${c.gallery_count} 張圖鑑 · ${c.tip_count} 條說明</div>
     </div>
 
-    ${countries.length ? `<p class="lead">各國依常出現的程度排序，愈前面愈值得先記。${c.tips.length
-      ? '每一國先看文字說明抓判斷重點，再對照下方的實例照片。'
-      : '這一類原站沒有寫文字說明，只有各國實例，直接比對圖片之間的差異。'}</p>` : ''}
+    ${c.intro ? `
+      <section class="intro">
+        <h2>${esc(c.intro.lead)}</h2>
+        ${c.intro.body.map(p => `<p>${esc(p)}</p>`).join('')}
+      </section>` : ''}
+
+    ${countries.length ? '<p class="lead">各國依常出現的程度排序，愈前面愈值得先記。怎麼判讀看上方導言。</p>' : ''}
 
     ${generic.length ? `
       <div class="rule"><h2>通用款式</h2><span class="count">${generic.length}</span></div>

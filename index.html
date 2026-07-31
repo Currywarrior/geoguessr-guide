@@ -195,6 +195,20 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 }
 .tag:hover{border-color:var(--gold);color:var(--gold)}
 
+/* ---------- 線索導言 ---------- */
+/* 原站好幾類只有圖沒有半句字（郵筒 279 張圖只有 4 條說明、商家品牌 189 張圖 0 條），
+   這一區是人工補寫的，告訴你這類線索該看哪裡、有什麼陷阱 */
+.intro{
+  margin:20px 0 4px; padding:16px 18px; max-width:760px;
+  background:var(--panel); border:1px solid var(--line);
+  border-left:2px solid var(--gold); border-radius:var(--radius);
+}
+.intro h2{font-size:19px;margin-bottom:8px}
+.intro p{color:var(--dim);margin-bottom:8px}
+.intro p:last-child{margin-bottom:0}
+/* 線索卡片上的一句話摘要 */
+.clue-card .cl{font-size:13px;color:var(--dim);margin:2px 0 5px;line-height:1.5}
+
 /* ---------- 線索頁的跳轉側欄 ---------- */
 /* 版首是 sticky 的，跳過去時要留出它的高度，否則國名會被蓋住 */
 .sec[id]{scroll-margin-top:78px}
@@ -298,6 +312,6 @@ footer a:hover{color:var(--gold)}
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=16"></script>
+<script src="app.js?v=18"></script>
 </body>
 </html>
