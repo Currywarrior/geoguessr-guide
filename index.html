@@ -70,23 +70,23 @@ main{max-width:1180px;margin:0 auto;padding:26px 20px 80px;position:relative;z-i
 .rule::after{content:"";flex:1;height:1px;background:var(--line)}
 
 /* ---------- 卡片網格 ---------- */
-.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(178px,1fr))}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(216px,1fr))}
 .card{
-  display:block; padding:12px 14px; background:var(--panel);
+  display:block; padding:14px 16px; background:var(--panel);
   border:1px solid var(--line); border-radius:var(--radius);
   border-left:2px solid var(--line); transition:border-color .12s,background .12s;
 }
 .card:hover{background:var(--panel2);border-left-color:var(--gold)}
-.card .nm{font-size:15px;margin-bottom:2px}
-.card .meta{font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
+.card .nm{font-size:17px;margin-bottom:3px}
+.card .meta{font-size:13px;color:var(--faint);font-variant-numeric:tabular-nums}
 .card.thin{opacity:.62}
 .card.thin:hover{opacity:1}
 /* 有國旗的卡片才切成兩欄，線索卡沒有旗、維持原本的 block 不受影響 */
-.card:has(>.flag){display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center}
+.card:has(>.flag){display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
 /* 用 contain 不用 cover：旗幟比例從尼泊爾的 0.82（直式燕尾）到卡達的 2.54 都有，
    cover 會把尼泊爾裁成中間一條、卡達切掉兩側鋸齒帶，那些正是辨識的關鍵 */
 .card .flag{
-  width:26px; height:18px; object-fit:contain;
+  width:36px; height:25px; object-fit:contain;
   border:1px solid var(--line); border-radius:2px; background:var(--panel2);
 }
 /* 說明橫跨整張卡的寬度。若讓它跟國名一樣縮排在第二欄，
@@ -204,6 +204,6 @@ footer a:hover{color:var(--gold)}
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>
