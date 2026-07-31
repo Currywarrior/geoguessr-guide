@@ -28,11 +28,20 @@ async function load(path) {
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // plonkit 的說明是 markdown，只用到粗體與連結兩種
+// 產生連結時，網址裡的底線與 target="_blank" 的底線都先換成佔位字串，
+// 最後一步再換回來。否則斜體規則會把 Flag_of_the_United_States 當成 _of_ 咬進去；
+// 一段話有兩個連結時，兩個 _blank 的底線還會互相配對，把 target 屬性整個吃掉。
+// 順序也不能改：連結先換掉，粗體與斜體才吃得到連結文字裡的標記。
+const UND = '@@UND@@';
+
 function md(s) {
   return esc(s)
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, t, u) =>
-      /^https?:\/\//.test(u) ? `<a href="${esc(u)}" target="_blank" rel="noopener">${t}</a>` : t)
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      /^https?:\/\//.test(u)
+        ? `<a href="${esc(u).replace(/_/g, UND)}" target="${UND}blank" rel="noopener">${t}</a>` : t)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/_([^_\n]+)_/g, '<em>$1</em>')
+    .replace(new RegExp(UND, 'g'), '_');
 }
 
 const cname = c => zh[c.key] || zh[c.name] || c.name;
