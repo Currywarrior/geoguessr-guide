@@ -172,7 +172,7 @@ function heroHtml(withGuide) {
         <div>
         <h1 class="hero-t">GeoGuessr <em>線索圖鑑</em></h1>
         <p class="hero-s">整合 plonkit 與 geohints 兩站的辨識線索，${withGuide} 國完整攻略，全站繁體中文。
-        賽前複習用「按國家」，遊戲中看到沒見過的東西就切「按線索」反查。</p>
+        各洲內依常出現的程度排序，愈前面愈值得先記。遊戲中看到沒見過的東西就切「按線索」反查。</p>
         </div>
         <div class="stats">
           <div><b>${index.countries.length}</b><span>國家與地區</span></div>
@@ -184,15 +184,25 @@ function heroHtml(withGuide) {
     </section>`;
 }
 
+// 跟線索頁同一套順序：常考的排前面，同一級再看攻略條數，最後用中文名收尾
+// 確保每次載入順序都一樣不會跳動
+const byFreq = (a, b) => {
+  const fa = FREQ_RANK[a.key] ?? 999, fb = FREQ_RANK[b.key] ?? 999;
+  if (fa !== fb) return fa - fb;
+  if (a.tips !== b.tips) return b.tips - a.tips;
+  return cname(a).localeCompare(cname(b), 'zh-Hant');
+};
+
 function viewCountries() {
   const withGuide = index.countries.filter(c => !c.no_guide);
   const groups = {};
   withGuide.forEach(c => (groups[c.continent || '其他'] ||= []).push(c));
+  Object.values(groups).forEach(g => g.sort(byFreq));
 
   const order = ['Europe', 'Asia', 'North America', 'South America', 'Africa', 'Oceania', 'Antarctica', 'General Guide'];
   const keys = [...new Set([...order.filter(k => groups[k]), ...Object.keys(groups)])];
 
-  const thin = index.countries.filter(c => c.no_guide);
+  const thin = index.countries.filter(c => c.no_guide).sort(byFreq);
 
   $('#v-countries').innerHTML = `
     ${heroHtml(withGuide.length)}
