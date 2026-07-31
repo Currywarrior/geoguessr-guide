@@ -209,13 +209,23 @@ async function viewClue(key) {
     return;
   }
 
-  // 圖鑑按國家分組，同一國的實例排在一起才好比對。
+  // 圖鑑與攻略說明都按國家分組後合併進同一區塊。
+  // 原本是先列完 109 國、405 張圖，才在最下面接 164 條說明，等於文字永遠滑不到，
+  // 而且看某國的照片時，那一國的解釋在幾千像素外。
   // 分組鍵用正規化後的 country，才對得上中譯表。
+  // geohints 有些圖不屬於任何國家，是在展示「這種線索總共有哪幾種長相」的款式圖
+  // （路標 60 張、轉彎標誌 5 張…共 85 張）。掛在空白國名底下會變成無標題區塊，
+  // 獨立成一節放最前面反而是最好的入門總覽。
+  const generic = c.gallery.filter(g => !(g.country || g.country_name));
+
   const byCountry = {};
+  const bucket = (k, name) => (byCountry[k] ||= { name, shots: [], tips: [] });
   c.gallery.forEach(g => {
     const k = g.country || g.country_name;
-    (byCountry[k] ||= { name: g.country_name, list: [] }).list.push(g);
+    if (k) bucket(k, g.country_name).shots.push(g);
   });
+  c.tips.forEach(t => bucket(t.country, t.country_name).tips.push(t));
+
   const countries = Object.keys(byCountry)
     .sort((a, b) => (zh[a] || byCountry[a].name).localeCompare(zh[b] || byCountry[b].name, 'zh-Hant'));
 
@@ -226,30 +236,32 @@ async function viewClue(key) {
       <div class="sub">${esc(c.en)} · ${c.gallery_count} 張圖鑑 · ${c.tip_count} 條說明</div>
     </div>
 
+    ${countries.length ? '<p class="lead">每一國先看文字說明抓判斷重點，再對照下方的實例照片。</p>' : ''}
+
+    ${generic.length ? `
+      <div class="rule"><h2>通用款式</h2><span class="count">${generic.length}</span></div>
+      <div class="gal">${shots(generic, () => '')}</div>` : ''}
+
     ${countries.length ? `
-      <div class="rule"><h2>各國實例</h2><span class="count">${countries.length} 國</span></div>
-      ${countries.map(k => `
+      <div class="rule"><h2>各國實例與說明</h2><span class="count">${countries.length} 國</span></div>
+      ${countries.map(k => {
+        const b = byCountry[k];
+        return `
         <section class="sec">
-          <h3><a href="#/country/${esc(k.replace(/ /g, '-'))}">${esc(zh[k] || byCountry[k].name)}</a>
-            <span class="count">${byCountry[k].list.length}</span></h3>
-          <div class="gal">${shots(byCountry[k].list, () => '')}</div>
-        </section>`).join('')}` : ''}
-
-    ${c.tips.length ? `
-      <div class="rule"><h2>攻略說明</h2><span class="count">${c.tips.length}</span></div>
-      ${c.tips.map(t => `
-        <article class="tip">
-          ${t.image ? `<div class="fig">
-            <img loading="lazy" src="${IMG}${esc(t.image)}" alt="" data-full="${IMG}${esc(t.image)}">
-            ${t.link ? `<a href="${esc(t.link)}" target="_blank" rel="noopener">在 Google 街景開啟</a>` : ''}
-          </div>` : ''}
-          <div class="bd">
-            <p><a href="#/country/${esc(t.country.replace(/ /g, '-'))}"><strong>${esc(zh[t.country] || t.country_name)}</strong></a></p>
-            ${bodyText(t)}
-          </div>
-        </article>`).join('')}` : ''}
-
-    ${!countries.length && !c.tips.length ? '<p class="empty">這個類型還沒有資料</p>' : ''}`;
+          <h3><a href="#/country/${esc(k.replace(/ /g, '-'))}">${esc(zh[k] || b.name)}</a>
+            <span class="count">${[b.tips.length && `${b.tips.length} 說明`, b.shots.length && `${b.shots.length} 圖`]
+              .filter(Boolean).join(' · ')}</span></h3>
+          ${b.tips.map(t => `
+            <article class="tip${t.important ? ' imp' : ''}">
+              ${t.image ? `<div class="fig">
+                <img loading="lazy" src="${IMG}${esc(t.image)}" alt="" data-full="${IMG}${esc(t.image)}">
+                ${t.link ? `<a href="${esc(t.link)}" target="_blank" rel="noopener">在 Google 街景開啟</a>` : ''}
+              </div>` : ''}
+              <div class="bd">${bodyText(t)}</div>
+            </article>`).join('')}
+          ${b.shots.length ? `<div class="gal">${shots(b.shots, () => '')}</div>` : ''}
+        </section>`;
+      }).join('')}` : '<p class="empty">這個類型還沒有資料</p>'}`;
 }
 
 // ---------------------------------------------------------------- 搜尋
