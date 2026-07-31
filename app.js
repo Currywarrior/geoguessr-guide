@@ -60,7 +60,8 @@ const bodyText = t => (t.text || []).map((s, i) => para((t.text_zh || [])[i] || 
 function shots(list, label) {
   return list.map(g => `
     <figure class="shot">
-      <img loading="lazy" src="${IMG}${esc(g.image)}" alt="" data-full="${IMG}${esc(g.image)}">
+      <img loading="lazy" class="${/\.svg$/i.test(g.image) ? 'vec' : ''}"
+           src="${IMG}${esc(g.image)}" alt="" data-full="${IMG}${esc(g.image)}">
       <figcaption class="cap">
         <span>${esc(label ? label(g) : '')}</span>
         ${g.link ? `<a href="${esc(g.link)}" target="_blank" rel="noopener">實景</a>` : ''}
@@ -74,6 +75,14 @@ const CONTINENT_ZH = {
   'Europe': '歐洲', 'Asia': '亞洲', 'Africa': '非洲',
   'North America': '北美洲', 'South America': '南美洲',
   'Oceania': '大洋洲', 'Antarctica': '南極', 'General Guide': '通用指南',
+};
+
+// geohints 沒有替每張圖標名稱，唯一能還原的脈絡是它來自哪個子頁。
+// 商家品牌那類混了啤酒與郵政兩種完全不同的東西，不標出來只看圖真的認不出在比什麼。
+const SUBCAT = {
+  '/meta/companies/beer': '啤酒品牌',
+  '/meta/companies/post': '郵政',
+  '/meta/companies/gasStations': '加油站',
 };
 
 // 線索頁的國家排序依據：GeoGuessr 世界地圖裡的出現頻率，大致跟街景道路覆蓋量成正比。
@@ -127,7 +136,8 @@ function renderQuiz(reveal) {
 
   el.innerHTML = `
     <div class="quiz-h"><span class="quiz-k">${esc(kind)}</span><span class="quiz-q">這是哪一國？</span></div>
-    <img class="shot-img" src="${IMG}${esc(img)}" alt="" data-full="${IMG}${esc(img)}">
+    <img class="shot-img${/\.svg$/i.test(img) ? ' vec' : ''}" src="${IMG}${esc(img)}" alt=""
+         data-full="${IMG}${esc(img)}">
     ${reveal ? `
       <a class="quiz-a" href="#/country/${esc(c.file)}">
         ${c.flag ? `<img class="flag" src="${IMG}${esc(c.flag)}" alt="">` : ''}
@@ -344,7 +354,9 @@ async function viewClue(key) {
       <div class="sub">${esc(c.en)} · ${c.gallery_count} 張圖鑑 · ${c.tip_count} 條說明</div>
     </div>
 
-    ${countries.length ? '<p class="lead">各國依常出現的程度排序，愈前面愈值得先記。每一國先看文字說明抓判斷重點，再對照下方的實例照片。</p>' : ''}
+    ${countries.length ? `<p class="lead">各國依常出現的程度排序，愈前面愈值得先記。${c.tips.length
+      ? '每一國先看文字說明抓判斷重點，再對照下方的實例照片。'
+      : '這一類原站沒有寫文字說明，只有各國實例，直接比對圖片之間的差異。'}</p>` : ''}
 
     ${generic.length ? `
       <div class="rule"><h2>通用款式</h2><span class="count">${generic.length}</span></div>
@@ -367,7 +379,7 @@ async function viewClue(key) {
               </div>` : ''}
               <div class="bd">${bodyText(t)}</div>
             </article>`).join('')}
-          ${b.shots.length ? `<div class="gal">${shots(b.shots, () => '')}</div>` : ''}
+          ${b.shots.length ? `<div class="gal">${shots(b.shots, g => SUBCAT[g.source_page] || '')}</div>` : ''}
         </section>`;
       }).join('')}` : '<p class="empty">這個類型還沒有資料</p>'}`;
 }
