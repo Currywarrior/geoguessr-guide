@@ -2,9 +2,20 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- viewport-fit=cover 讓版面延伸到瀏海與圓角底下，安全區留白交給 env() 處理，
+     不加的話裝成 app 後上下會各留一條黑邊 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>GeoGuessr 線索圖鑑</title>
+
+<!-- 裝到手機桌面用的 PWA 設定 -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#11141a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GeoAtlas">
 <style>
 :root{
   --bg:#11141a; --panel:#181d25; --panel2:#1f252f; --line:#2b3340;
@@ -48,7 +59,14 @@ header{
   position:sticky; top:0; z-index:20; background:rgba(17,20,26,.94);
   border-bottom:1px solid var(--line); backdrop-filter:blur(8px);
 }
-.bar{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+/* 裝成手機 app 後版面會延伸到瀏海與底部橫條底下（viewport-fit=cover），
+   安全區的留白要自己補回來，否則版首被瀏海切掉、內文壓在 home 指示條下面。
+   瀏覽器裡開這幾個 env() 都是 0，等於沒作用 */
+header{padding-top:env(safe-area-inset-top)}
+.bar{
+  max-width:1180px; margin:0 auto; display:flex; gap:18px; align-items:center; flex-wrap:wrap;
+  padding:12px max(20px,env(safe-area-inset-right)) 12px max(20px,env(safe-area-inset-left));
+}
 .brand{font-family:Georgia,serif;font-size:19px;letter-spacing:.02em;white-space:nowrap}
 .brand b{color:var(--gold);font-weight:600}
 .brand span{color:var(--faint);font-size:12px;letter-spacing:.14em;display:block;margin-top:-2px}
@@ -84,7 +102,10 @@ nav a.on{color:var(--bg);background:var(--gold);border-color:var(--gold);font-we
 .results mark{background:transparent;color:var(--gold);font-weight:600}
 
 /* ---------- 版面 ---------- */
-main{max-width:1180px;margin:0 auto;padding:26px 20px 80px;position:relative;z-index:1}
+main{
+  max-width:1180px; margin:0 auto; position:relative; z-index:1;
+  padding:26px max(20px,env(safe-area-inset-right)) calc(80px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));
+}
 .view{display:none}
 .view.on{display:block}
 .lead{color:var(--dim);margin-bottom:22px;max-width:660px}
@@ -403,5 +424,12 @@ footer a:hover{color:var(--gold)}
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
 <script src="app.js?v=28"></script>
+<script>
+// 註冊 Service Worker，讓這站可以裝到手機桌面並離線瀏覽。
+// file:// 直接開的時候沒有 serviceWorker 可用，包起來免得整頁報錯。
+if ('serviceWorker' in navigator) {
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+</script>
 </body>
 </html>

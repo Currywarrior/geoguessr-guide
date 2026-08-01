@@ -73,8 +73,26 @@ python -m http.server 8781
 
 > **不要用 8765。** 那個 port 上有 japan-travel 的 service worker，會攔截請求回傳它自己的頁面，
 > 症狀是畫面莫名其妙變成「日本旅遊完全攻略」。
+>
+> **這站現在也有 service worker，佔的是 8781。** 同樣的陷阱：之後若在 8781 上開別的專案，
+> 會拿到 GeoAtlas 的頁面。要解除就在 DevTools → Application → Service workers 按 Unregister。
 
 前端是零依賴的原生 JS，沒有打包步驟、沒有 node_modules。
+
+## 裝到手機
+
+站台是 PWA，手機瀏覽器開站後選「加入主畫面」就會變成獨立 app：沒有網址列、
+有自己的圖示、離線也打得開。
+
+| 檔案 | 作用 |
+|---|---|
+| `manifest.json` | app 名稱、圖示、`display: standalone`、主題色 |
+| `sw.js` | 離線快取。程式與資料整包留著，圖鑑照片另開一個快取並限 400 張 |
+| `icon.svg` / `icon-*.png` | 圖示。PNG 由 `scripts/make_icons.py` 產，跟 SVG 同一套幾何 |
+
+照片為什麼要限量：圖鑑全站 817MB、9000 多張，隨看隨存會把手機空間吃光。
+只留最近看過的 400 張，超過就從最舊的開始砍。**改版時要把 `sw.js` 的 `VER` 往上加一**，
+否則使用者會一直吃到舊快取。
 
 ## 資料從哪來
 
