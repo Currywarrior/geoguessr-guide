@@ -303,7 +303,6 @@ function viewClues() {
         <a class="card clue-card" href="#/clue/${c.key}">
           <div class="nm">${esc(c.zh)}</div>
           ${c.lead ? `<div class="cl">${esc(c.lead)}</div>` : ''}
-          <div class="meta">${c.gallery ? `${c.gallery} 張圖鑑` : ''}${c.gallery && c.tips ? ' · ' : ''}${c.tips ? `${c.tips} 條說明` : ''}</div>
         </a>`).join('')}
     </div>`;
 }

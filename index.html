@@ -8,9 +8,11 @@
 <style>
 :root{
   --bg:#11141a; --panel:#181d25; --panel2:#1f252f; --line:#2b3340;
-  /* 三層文字亮度都實測過對比：ink 13:1、dim 6.6:1、faint 4.8:1（面板底色上）。
-     faint 原本是 #6b7483 只有 3.6:1，小字看不清楚，提亮到剛好過 4.5:1 的門檻 */
-  --ink:#e9e5db; --dim:#9aa3b2; --faint:#7f8998;
+  /* 三層文字亮度（括號是面板底色上的對比）。前兩版把 faint 壓在 4.8:1、
+     dim 壓在 6.6:1，雖然都過了 WCAG 門檻，實際看還是一片灰、小字讀不出來。
+     這版直接把兩層都往上拉：ink 13.5:1、dim 11.0:1、faint 8.0:1，
+     三層之間仍分得出主次，但沒有一層是要瞇眼才看得清的 */
+  --ink:#e9e5db; --dim:#c9d1de; --faint:#aab3c2;
   --gold:#c9a227; --green:#5c8a6a; --rust:#b1573a;
   --radius:3px;
 }
@@ -146,7 +148,6 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 }
 .card:hover{background:var(--panel2);border-left-color:var(--gold)}
 .card .nm{font-size:17px;margin-bottom:3px}
-.card .meta{font-size:13px;color:var(--faint);font-variant-numeric:tabular-nums}
 .card.thin{opacity:.75}
 .card.thin:hover{opacity:1}
 /* 有國旗的卡片才切成兩欄，線索卡沒有旗、維持原本的 block 不受影響 */
@@ -215,7 +216,7 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 .intro p{color:var(--dim);margin-bottom:8px}
 .intro p:last-child{margin-bottom:0}
 /* 線索卡片上的一句話摘要 */
-.clue-card .cl{font-size:13px;color:var(--dim);margin:2px 0 5px;line-height:1.5}
+.clue-card .cl{font-size:13px;color:var(--dim);margin-top:2px;line-height:1.5}
 
 /* ---------- 線索頁的跳轉側欄 ---------- */
 /* 版首是 sticky 的，跳過去時要留出它的高度，否則國名會被蓋住 */
@@ -348,6 +349,6 @@ footer a:hover{color:var(--gold)}
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=25"></script>
+<script src="app.js?v=26"></script>
 </body>
 </html>
