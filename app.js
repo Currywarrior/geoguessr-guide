@@ -259,7 +259,13 @@ function viewCountries() {
   const order = ['Europe', 'Asia', 'North America', 'South America', 'Africa', 'Oceania', 'Antarctica', 'General Guide'];
   const keys = [...new Set([...order.filter(k => groups[k]), ...Object.keys(groups)])];
 
-  const thin = index.countries.filter(c => c.no_guide).sort(byFreq);
+  // 這批也依洲分組。原本 122 張卡片平舖成一大片，排序只剩中文名筆劃，
+  // 想找某個加勒比海小島得整片掃過去。洲別是人工補的（data/country_extra.json）。
+  const thin = index.countries.filter(c => c.no_guide);
+  const thinGroups = {};
+  thin.forEach(c => (thinGroups[c.continent || '其他'] ||= []).push(c));
+  Object.values(thinGroups).forEach(g => g.sort(byFreq));
+  const thinKeys = [...new Set([...order.filter(k => thinGroups[k]), ...Object.keys(thinGroups)])];
 
   $('#v-countries').innerHTML = `
     ${heroHtml(withGuide.length)}
@@ -270,14 +276,17 @@ function viewCountries() {
           <a class="card" href="#/country/${c.file}">
             ${flagImg(c)}
             <div class="nm">${esc(cname(c))}</div>
-            <div class="meta">${c.tips} 條說明${c.gallery ? ` · ${c.gallery} 張圖鑑` : ''}</div>
           </a>`).join('')}
       </div>`).join('')}
     <div class="rule"><h2>僅有硬線索</h2><span class="count">${thin.length}</span></div>
     <p class="lead">這些國家沒有完整攻略，但仍可查行車方向、電話區碼、網域、貨幣等可直接鎖定答案的硬線索。</p>
-    <div class="grid">
-      ${thin.map(c => `<a class="card thin" href="#/country/${c.file}">${flagImg(c)}<div class="nm">${esc(cname(c))}</div></a>`).join('')}
-    </div>`;
+    ${thinKeys.map(k => `
+      <section class="sec">
+        <h3>${CONTINENT_ZH[k] || k} <span class="count">${thinGroups[k].length}</span></h3>
+        <div class="grid">
+          ${thinGroups[k].map(c => `<a class="card thin" href="#/country/${c.file}">${flagImg(c)}<div class="nm">${esc(cname(c))}</div></a>`).join('')}
+        </div>
+      </section>`).join('')}`;
 
   initQuiz();
 }

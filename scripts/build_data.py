@@ -465,6 +465,32 @@ def main():
                 "facts": f, "no_guide": True,
             }
 
+    # 人工補的洲別與硬線索（data/country_extra.json）。
+    # geohints 對照表只涵蓋主要國家，那 122 個沒有 plonkit 攻略的國家與屬地
+    # 多半只查得到行車方向一項，也沒有洲別可以分組。
+    # 一律只填空的欄位，爬到的原始值優先，這份檔案不會覆蓋任何一筆。
+    extra_src = ROOT / "data" / "country_extra.json"
+    filled_continent = filled_facts = 0
+    if extra_src.exists():
+        extra = {k: v for k, v in
+                 json.loads(extra_src.read_text(encoding="utf-8")).items()
+                 if not k.startswith("_")}
+        stray = sorted(set(extra) - set(countries))
+        if stray:
+            print(f"注意：country_extra.json 有對不上任何國家的鍵：{'、'.join(stray)}")
+        for key, e in extra.items():
+            c = countries.get(key)
+            if c is None:
+                continue
+            if e.get("continent") and not c.get("continent"):
+                c["continent"] = e["continent"]
+                filled_continent += 1
+            f = c.setdefault("facts", {})
+            for k, v in e.items():
+                if k != "continent" and not f.get(k):
+                    f[k] = v
+                    filled_facts += 1
+
     # 圖鑑併進國家資料
     for clue, items in gallery.items():
         for it in items:
@@ -622,6 +648,7 @@ def main():
     have_clue = sum(1 for t in all_tips if t["clues"])
     print(f"國家 {len(countries)} 個（有攻略 {len(with_guide)}，只有硬線索 {len(countries) - len(with_guide)}）")
     print(f"對照表對上國家 {matched_facts} 個")
+    print(f"人工補充：洲別 {filled_continent} 國，硬線索欄位 {filled_facts} 筆")
     print(f"tip {len(all_tips)} 條：原站標籤 {tagged} 條，補標後有線索的 {have_clue} 條"
           f"（{have_clue / len(all_tips) * 100:.1f}%）")
     print(f"圖鑑 {sum(len(v) for v in gallery.values())} 張，涵蓋 {len(gallery)} 類線索\n")

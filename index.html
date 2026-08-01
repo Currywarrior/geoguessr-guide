@@ -150,16 +150,15 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 .card.thin{opacity:.75}
 .card.thin:hover{opacity:1}
 /* 有國旗的卡片才切成兩欄，線索卡沒有旗、維持原本的 block 不受影響 */
-.card:has(>.flag){display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
+.card:has(>.flag){display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:center}
+/* 國家卡只剩國旗與國名兩個元素，兩者都放大到能一眼掃過去的尺寸 */
+.card:has(>.flag) .nm{font-size:20px;margin-bottom:0}
 /* 用 contain 不用 cover：旗幟比例從尼泊爾的 0.82（直式燕尾）到卡達的 2.54 都有，
    cover 會把尼泊爾裁成中間一條、卡達切掉兩側鋸齒帶，那些正是辨識的關鍵 */
 .card .flag{
-  width:36px; height:25px; object-fit:contain;
+  width:52px; height:36px; object-fit:contain;
   border:1px solid var(--line); border-radius:2px; background:var(--panel2);
 }
-/* 說明橫跨整張卡的寬度。若讓它跟國名一樣縮排在第二欄，
-   俄羅斯這種三位數說明的卡片會被國旗擠到換行，整排卡片跟著變高 */
-.card:has(>.flag) .meta{grid-column:1/-1}
 
 /* ---------- 國家頁 ---------- */
 .page-head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:6px}
