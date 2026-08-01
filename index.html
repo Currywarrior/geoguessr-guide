@@ -246,8 +246,7 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 .jump-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
 .jump-list::-webkit-scrollbar-thumb:hover{background:var(--faint)}
 .jump-list a{
-  position:relative; display:flex; justify-content:space-between; gap:8px;
-  align-items:baseline; padding:5px 8px 5px 11px; font-size:14px; color:var(--dim);
+  position:relative; display:block; padding:5px 8px 5px 11px; font-size:14px; color:var(--dim);
   cursor:pointer; border-radius:2px;
   transition:color .14s, background .14s, padding-left .14s;
 }
@@ -260,8 +259,6 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 .jump-list a:hover{color:var(--ink);background:var(--panel);padding-left:15px}
 .jump-list a:hover::before,.jump-list a.on::before{transform:scaleY(1)}
 .jump-list a.on{color:var(--gold);background:var(--panel)}
-.jump-list a i{font-style:normal;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
-.jump-list a.on i{color:var(--gold);opacity:.8}
 .jump-none{color:var(--faint);font-size:13px;padding:8px 6px}
 /* 篩選後剩下的項目淡入，直接跳出來會覺得畫面在閃 */
 @keyframes jin{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
@@ -349,6 +346,6 @@ footer a:hover{color:var(--gold)}
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=26"></script>
+<script src="app.js?v=27"></script>
 </body>
 </html>

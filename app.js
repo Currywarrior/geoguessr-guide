@@ -430,7 +430,7 @@ async function viewClue(key) {
     <div class="page-head">
       <a class="back" href="#/clues">← 全部線索</a>
       <h1>${esc(c.zh)}</h1>
-      <div class="sub">${esc(c.en)} · ${c.gallery_count} 張圖鑑 · ${c.tip_count} 條說明</div>
+      <div class="sub">${esc(c.en)}</div>
     </div>
 
     ${c.intro ? `
@@ -455,7 +455,6 @@ async function viewClue(key) {
           ${countries.map(k => `
             <a data-jump="${cid(k)}" data-nm="${esc((zh[k] || byCountry[k].name).toLowerCase())} ${esc(k)}">
               ${esc(zh[k] || byCountry[k].name)}
-              <i>${byCountry[k].tips.length || ''}${byCountry[k].tips.length && byCountry[k].shots.length ? '·' : ''}${byCountry[k].shots.length || ''}</i>
             </a>`).join('')}
         </div>
       </aside>
@@ -464,9 +463,7 @@ async function viewClue(key) {
         const b = byCountry[k];
         return `
         <section class="sec" id="c-${cid(k)}">
-          <h3><a href="#/country/${esc(k.replace(/ /g, '-'))}">${esc(zh[k] || b.name)}</a>
-            <span class="count">${[b.tips.length && `${b.tips.length} 說明`, b.shots.length && `${b.shots.length} 圖`]
-              .filter(Boolean).join(' · ')}</span></h3>
+          <h3><a href="#/country/${esc(k.replace(/ /g, '-'))}">${esc(zh[k] || b.name)}</a></h3>
           ${b.tips.map(t => `
             <article class="tip${t.important ? ' imp' : ''}">
               ${t.image ? `<div class="fig">
