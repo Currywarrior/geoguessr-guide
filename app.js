@@ -60,16 +60,20 @@ function para(t) {
 // 翻譯是逐條累積的，某一條還沒翻就顯示該條英文原文，不用整篇等
 const bodyText = t => (t.text || []).map((s, i) => para((t.text_zh || [])[i] || s)).join('');
 
+// 說明列只在真的有字時才出現。國家頁與通用款式區從來不給 label，
+// 原本每張圖底下都固定掛一條，結果是一條空白帶右邊浮著一個「實景」，
+// 整面圖鑑被那些空條切得很碎。街景連結改成疊在圖片右下角的小徽章。
 function shots(list, label) {
-  return list.map(g => `
+  return list.map(g => {
+    const cap = label ? label(g) : '';
+    return `
     <figure class="shot">
       <img loading="lazy" class="${/\.svg$/i.test(g.image) ? 'vec' : ''}"
            src="${IMG}${esc(g.image)}" alt="" data-full="${IMG}${esc(g.image)}">
-      <figcaption class="cap">
-        <span>${esc(label ? label(g) : '')}</span>
-        ${g.link ? `<a href="${esc(g.link)}" target="_blank" rel="noopener">實景</a>` : ''}
-      </figcaption>
-    </figure>`).join('');
+      ${g.link ? `<a class="shot-go" href="${esc(g.link)}" target="_blank" rel="noopener">街景</a>` : ''}
+      ${cap ? `<figcaption class="cap">${esc(cap)}</figcaption>` : ''}
+    </figure>`;
+  }).join('');
 }
 
 // ---------------------------------------------------------------- 國家一覽
@@ -378,7 +382,7 @@ async function viewCountry(file) {
       <div class="rule"><h2>實例圖鑑</h2></div>
       ${Object.entries(gal).map(([k, list]) => `
         <section class="sec">
-          <h3><a href="#/clue/${k}">${esc(clueName(k))}</a> <span class="count">${list.length}</span></h3>
+          <h3><a href="#/clue/${k}">${esc(clueName(k))}</a></h3>
           <div class="gal">${shots(list, () => '')}</div>
         </section>`).join('')}` : ''}
 
@@ -452,18 +456,33 @@ async function viewClue(key) {
         <div class="jump-h">跳到國家<em>${countries.length}</em></div>
         <input class="jump-f" id="jf" type="search" placeholder="篩選國家" autocomplete="off">
         <div class="jump-list" id="jl">
-          ${countries.map(k => `
+          ${countries.map(k => {
+            const f = index.countries.find(x => x.key === k)?.flag;
+            return `
             <a data-jump="${cid(k)}" data-nm="${esc((zh[k] || byCountry[k].name).toLowerCase())} ${esc(k)}">
+              ${f ? `<img class="jump-flag" src="${IMG}${esc(f)}" alt="" loading="lazy">` : '<span class="jump-flag"></span>'}
               ${esc(zh[k] || byCountry[k].name)}
-            </a>`).join('')}
+            </a>`;
+          }).join('')}
         </div>
       </aside>
       <div>
-      ${countries.map(k => {
+      ${countries.map((k, n) => {
         const b = byCountry[k];
+        // 每一國做成圖鑑條目的標頭：編號、國旗、中文名、原名與洲別。
+        // 原本只有一行光禿禿的國名，滑過 141 國每一段看起來都一樣，
+        // 停下來時得往回找才知道自己在誰的段落裡。編號同時也是常見度排名。
+        const ci = index.countries.find(x => x.key === k);
         return `
         <section class="sec" id="c-${cid(k)}">
-          <h3><a href="#/country/${esc(k.replace(/ /g, '-'))}">${esc(zh[k] || b.name)}</a></h3>
+          <header class="entry">
+            <span class="entry-no">${String(n + 1).padStart(2, '0')}</span>
+            ${ci?.flag ? `<img class="entry-flag" src="${IMG}${esc(ci.flag)}" alt="" loading="lazy">` : ''}
+            <div class="entry-t">
+              <h3><a href="#/country/${esc(k.replace(/ /g, '-'))}">${esc(zh[k] || b.name)}</a></h3>
+              <div class="entry-sub">${esc(ci?.name || b.name)}${ci?.continent ? ` · ${CONTINENT_ZH[ci.continent] || ci.continent}` : ''}</div>
+            </div>
+          </header>
           ${b.tips.map(t => `
             <article class="tip${t.important ? ' imp' : ''}">
               ${t.image ? `<div class="fig">

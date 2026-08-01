@@ -182,6 +182,32 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 /* tip 條目 */
 .sec{margin-top:30px}
 .sec h3{font-size:20px;margin-bottom:4px}
+
+/* ---------- 圖鑑條目標頭 ---------- */
+/* 線索頁一路往下是上百個國家區塊。只有一行國名的話每段長得一模一樣，
+   停下來時得往回捲才知道自己在誰的段落。這個標頭給它一個錨點：
+   左邊是編號（同時就是常見度排名）、國旗，右邊是中文名與原名洲別，
+   底下一條金線把整段收起來，像圖鑑上每一頁的條目抬頭 */
+.entry{
+  display:grid; grid-template-columns:auto auto 1fr; align-items:center; gap:14px;
+  padding-bottom:9px; margin-bottom:14px; border-bottom:1px solid var(--line);
+  position:relative;
+}
+.entry::after{
+  content:""; position:absolute; left:0; bottom:-1px; width:64px; height:1px; background:var(--gold);
+}
+.entry-no{
+  font-family:Georgia,serif; font-size:26px; line-height:1; color:var(--line);
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em;
+}
+.sec:target .entry-no,.entry:hover .entry-no{color:var(--gold)}
+.entry-flag{
+  width:46px; height:32px; object-fit:contain; display:block;
+  border:1px solid var(--line); border-radius:2px; background:var(--panel2);
+}
+.entry-t h3{font-size:22px;margin-bottom:1px}
+.entry-t h3 a:hover{color:var(--gold)}
+.entry-sub{font-size:12px;letter-spacing:.06em;color:var(--faint)}
 .tip{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
 .tip:last-child{border-bottom:none}
 .tip.imp{border-left:2px solid var(--gold);padding-left:14px;background:rgba(201,162,39,.04)}
@@ -246,9 +272,16 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 .jump-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
 .jump-list::-webkit-scrollbar-thumb:hover{background:var(--faint)}
 .jump-list a{
-  position:relative; display:block; padding:5px 8px 5px 11px; font-size:14px; color:var(--dim);
+  position:relative; display:flex; align-items:center; gap:9px;
+  padding:4px 8px 4px 11px; font-size:14px; color:var(--dim);
   cursor:pointer; border-radius:2px;
   transition:color .14s, background .14s, padding-left .14s;
+}
+/* 側欄配上國旗才像索引。純文字清單掃一百多國，眼睛只能一行一行讀；
+   有旗子就能靠顏色先粗篩。沒有旗的用同尺寸空格佔位，文字才不會參差 */
+.jump-flag{
+  flex:0 0 auto; width:22px; height:15px; object-fit:contain; display:block;
+  border:1px solid var(--line); border-radius:1px; background:var(--panel2);
 }
 /* 金色標記從上往下展開，不是整條硬切換 */
 .jump-list a::before{
@@ -280,11 +313,34 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 
 /* ---------- 圖鑑 ---------- */
 .gal{display:grid;gap:9px;grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
-.shot{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+/* 四張以上才讓第一張跨兩欄兩列。整面都是同尺寸的矩形時，眼睛沒有落點，
+   一整頁看起來就是一片格子；放大第一張等於替每個國家挑一張代表圖，
+   其餘是佐證。不足四張就別放大，一張大圖旁邊空一大塊更難看 */
+.gal:has(.shot:nth-child(4)) .shot:first-child{grid-column:span 2;grid-row:span 2}
+.gal:has(.shot:nth-child(4)) .shot:first-child img{height:100%;aspect-ratio:auto}
+.shot{
+  position:relative; background:var(--panel); border:1px solid var(--line);
+  border-radius:var(--radius); overflow:hidden;
+}
 .shot img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:var(--panel2)}
-.shot .cap{padding:6px 9px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:6px}
-.shot .cap a{font-size:11px;color:var(--faint);white-space:nowrap}
-.shot .cap a:hover{color:var(--gold)}
+.shot .cap{padding:6px 9px;font-size:13px}
+/* 街景連結改成疊在圖片右下角的小徽章。原本每張圖底下都固定掛一條說明列，
+   但國家頁與通用款式區根本沒有說明文字，那條就變成一片空白帶右邊浮著
+   一個「實景」，整面圖鑑被切得很碎 */
+.shot-go{
+  position:absolute; right:7px; bottom:7px; z-index:2;
+  font-size:11px; letter-spacing:.08em; padding:2px 8px;
+  color:var(--ink); background:rgba(17,20,26,.82); border:1px solid var(--line);
+  border-radius:2px; backdrop-filter:blur(3px);
+}
+.shot-go:hover{color:var(--bg);background:var(--gold);border-color:var(--gold)}
+/* 有滑鼠才藏起來等 hover；觸控裝置沒有 hover，藏了就永遠點不到 */
+@media(hover:hover){
+  .shot-go{opacity:0;transition:opacity .14s}
+  .shot:hover .shot-go,.shot-go:focus{opacity:1}
+}
+/* 說明列存在時，徽章要讓開，不要壓在字上 */
+.shot:has(.cap) .shot-go{bottom:auto;top:7px}
 
 .empty{color:var(--faint);padding:30px 0;text-align:center}
 
@@ -346,6 +402,6 @@ footer a:hover{color:var(--gold)}
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=27"></script>
+<script src="app.js?v=28"></script>
 </body>
 </html>
