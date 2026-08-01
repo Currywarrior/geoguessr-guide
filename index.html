@@ -157,8 +157,88 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
   border:1px solid var(--line); border-radius:var(--radius);
 }
 .quiz-btns button:hover{color:var(--gold);border-color:var(--gold)}
+/* 通往練習頁的入口。首頁這張只是閃卡，真正會計分的測驗在 #/quiz */
+.quiz-go{
+  flex:1; padding:8px 10px; font-size:13px; text-align:center; white-space:nowrap;
+  color:var(--gold); border:1px solid var(--line); border-radius:var(--radius);
+}
+.quiz-go:hover{border-color:var(--gold)}
 .quiz-load{color:var(--faint);font-size:13px;padding:44px 0;text-align:center}
 @media(max-width:820px){.hero{grid-template-columns:1fr}.hero-t{font-size:31px}}
+
+/* ---------- 練習模式 ---------- */
+/* 首頁那張小卡是閃卡，這一頁才是測驗：四選一、計分、結束列出答錯的題目 */
+.run-top{
+  display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+  font-size:13px; letter-spacing:.06em; color:var(--dim); margin-bottom:8px;
+}
+.run-top b{font-family:Georgia,serif;font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums}
+.run-kind{
+  margin-left:auto; font-size:11px; letter-spacing:.1em;
+  color:var(--bg); background:var(--gold); padding:2px 9px; border-radius:2px;
+}
+.run-bar{height:2px;background:var(--line);margin-bottom:20px}
+.run-bar i{display:block;height:100%;background:var(--gold);transition:width .25s ease-out}
+.run-body{display:grid;grid-template-columns:1fr 380px;gap:26px;align-items:start}
+.run-fig{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel)}
+.run-fig img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;cursor:zoom-in}
+.run-q{font-family:Georgia,"Noto Serif TC",serif;font-size:21px;margin-bottom:14px}
+.run-opts{display:flex;flex-direction:column;gap:8px}
+.run-opt{
+  display:flex; align-items:center; gap:12px; width:100%; padding:11px 13px;
+  font:inherit; font-size:16px; text-align:left; cursor:pointer; color:var(--ink);
+  background:var(--panel); border:1px solid var(--line);
+  border-left:2px solid var(--line); border-radius:var(--radius);
+  transition:border-color .12s,background .12s;
+}
+.run-opt .flag{
+  flex:0 0 auto; width:34px; height:23px; object-fit:contain;
+  border:1px solid var(--line); border-radius:2px; background:var(--panel2);
+}
+.run-opt b{font-weight:400}
+.run-opt:not(:disabled):hover{background:var(--panel2);border-left-color:var(--gold)}
+/* 作答後：正解一律標綠（不管你選的是不是它），選錯的那個標紅，其餘淡出。
+   只標「你選的對不對」不夠，答錯時要同時看到正解才學得到東西 */
+.run-opt.right{border-color:var(--green);border-left-color:var(--green);background:rgba(92,138,106,.12)}
+.run-opt.miss{border-color:var(--rust);border-left-color:var(--rust);background:rgba(177,87,58,.12)}
+.run-opt.off{opacity:.4}
+.run-opt:disabled{cursor:default}
+.run-next{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.run-go{font-size:14px;color:var(--dim);border-bottom:1px solid var(--line)}
+.run-go:hover{color:var(--gold)}
+.run-next button{
+  margin-left:auto; padding:9px 22px; font:inherit; font-size:15px; cursor:pointer;
+  color:var(--bg); background:var(--gold); border:1px solid var(--gold); border-radius:var(--radius);
+}
+.run-next button:hover{background:#dcb43a}
+/* 結算 */
+.run-done{text-align:center;padding:40px 0 10px}
+.run-score-big{font-family:Georgia,serif;line-height:1;margin-bottom:12px}
+.run-score-big b{font-size:76px;color:var(--gold);font-variant-numeric:tabular-nums}
+.run-score-big span{font-size:26px;color:var(--faint);margin-left:6px}
+.run-say{color:var(--dim);margin-bottom:20px}
+.run-again{
+  padding:10px 30px; font:inherit; font-size:15px; cursor:pointer;
+  color:var(--bg); background:var(--gold); border:1px solid var(--gold); border-radius:var(--radius);
+}
+.run-again:hover{background:#dcb43a}
+/* 答錯的題目：把圖、正解、你選的錯答放在一起，才知道自己是把誰認成誰 */
+.miss{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.miss-c{
+  display:block; background:var(--panel); border:1px solid var(--line);
+  border-left:2px solid var(--rust); border-radius:var(--radius); overflow:hidden;
+}
+.miss-c:hover{background:var(--panel2)}
+.miss-c > img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:var(--panel2)}
+.miss-b{padding:11px 13px}
+.miss-k{font-size:11px;letter-spacing:.1em;color:var(--gold)}
+.miss-r{display:flex;align-items:center;gap:9px;margin:5px 0 3px;font-size:18px}
+.miss-r .flag{width:30px;height:21px;object-fit:contain;border:1px solid var(--line);border-radius:2px}
+.miss-w{font-size:13px;color:var(--faint)}
+@media(max-width:820px){
+  .run-body{grid-template-columns:1fr}
+  .run-score-big b{font-size:60px}
+}
 
 /* ---------- 卡片網格 ---------- */
 .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(216px,1fr))}
@@ -399,6 +479,7 @@ footer a:hover{color:var(--gold)}
     <nav>
       <a href="#/" data-nav="countries">按國家</a>
       <a href="#/clues" data-nav="clues">按線索</a>
+      <a href="#/quiz" data-nav="quiz">練習</a>
     </nav>
     <div class="search">
       <input id="q" type="search" placeholder="搜尋國家或線索" autocomplete="off">
@@ -412,6 +493,7 @@ footer a:hover{color:var(--gold)}
   <section class="view" id="v-clues"></section>
   <section class="view" id="v-country"></section>
   <section class="view" id="v-clue"></section>
+  <section class="view" id="v-quiz"></section>
 </main>
 
 <footer>
@@ -423,7 +505,7 @@ footer a:hover{color:var(--gold)}
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=28"></script>
+<script src="app.js?v=29"></script>
 <script>
 // 註冊 Service Worker，讓這站可以裝到手機桌面並離線瀏覽。
 // file:// 直接開的時候沒有 serviceWorker 可用，包起來免得整頁報錯。

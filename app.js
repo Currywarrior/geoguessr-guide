@@ -181,6 +181,7 @@ const flagImg = c => c.flag
 // 只在首頁第一次渲染時載一次。
 let quizPool = null;
 let quizCur = null;
+let quizKeys = null;   // 題庫涵蓋的國家，練習模式挑干擾項時只從這裡面挑
 
 function pickQuiz() {
   if (!quizPool || !quizPool.length) return;
@@ -210,6 +211,7 @@ function renderQuiz(reveal) {
     <div class="quiz-btns">
       ${reveal ? '' : '<button type="button" data-quiz="reveal">揭曉答案</button>'}
       <button type="button" data-quiz="next">${reveal ? '再來一題' : '換一題'}</button>
+      <a class="quiz-go" href="#/quiz">十題測驗 →</a>
     </div>`;
 }
 
@@ -222,6 +224,147 @@ async function initQuiz() {
   }
   pickQuiz();
   renderQuiz(false);
+}
+
+// ---------------------------------------------------------------- 練習模式
+// 首頁那張小卡只是閃卡：看圖、揭曉、換一張。沒有作答，也就不會知道自己
+// 到底記住多少。這裡做成一輪十題的測驗，四選一、計分，結束後列出答錯的題目。
+
+const RUN_LEN = 10;
+let run = null;
+
+function shuffle(a) {
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [r[i], r[j]] = [r[j], r[i]];
+  }
+  return r;
+}
+
+// 干擾項要「像是會搞混的國家」才有練習價值：同洲抽兩個、跨洲抽一個。
+// 全隨機的話，歐洲的路樁配上三個非洲選項，不用看圖也知道答案。
+// 候選只從題庫出現過的國家挑，那些才是遊戲裡真的會遇到的。
+function optionsFor(key) {
+  const right = index.countries.find(c => c.key === key);
+  const pool = index.countries.filter(c => c.key !== key && quizKeys.has(c.key));
+  const same = shuffle(pool.filter(c => c.continent === right.continent));
+  const rest = shuffle(pool.filter(c => c.continent !== right.continent));
+  const wrong = [...same.slice(0, 2), ...rest.slice(0, 1)];
+  // 同洲候選不夠（大洋洲那種）就從剩下的補滿三個
+  for (const c of [...same.slice(2), ...rest.slice(1)]) {
+    if (wrong.length >= 3) break;
+    wrong.push(c);
+  }
+  return shuffle([right, ...wrong]);
+}
+
+function startRun() {
+  const seen = new Set();
+  const queue = [];
+  // 一輪裡不重複同一國，否則十題有三題都是美國
+  for (const q of shuffle(quizPool)) {
+    if (seen.has(q[1]) || !index.countries.some(c => c.key === q[1])) continue;
+    seen.add(q[1]);
+    queue.push(q);
+    if (queue.length === RUN_LEN) break;
+  }
+  run = { queue, i: 0, score: 0, wrong: [], picked: null, opts: optionsFor(queue[0][1]) };
+}
+
+function runOptHtml(c, state) {
+  return `
+    <button type="button" class="run-opt${state}" data-qz="ans" data-key="${esc(c.key)}"${state ? ' disabled' : ''}>
+      ${c.flag ? `<img class="flag" src="${IMG}${esc(c.flag)}" alt="">` : '<span class="flag"></span>'}
+      <b>${esc(cname(c))}</b>
+    </button>`;
+}
+
+function runResultHtml() {
+  const n = run.queue.length;
+  const say = run.score === n ? '全對。' :
+    run.score >= n * 0.7 ? '底子有了，錯的那幾國補一下就好。' :
+    run.score >= n * 0.4 ? '一半左右，答錯的那幾國值得回去把攻略看完。' :
+    '這批線索還沒進到腦子裡，先從答錯的國家頁看起。';
+  return `
+    <div class="run">
+      <div class="run-done">
+        <div class="run-score-big"><b>${run.score}</b><span>/ ${n}</span></div>
+        <p class="run-say">${say}</p>
+        <button type="button" class="run-again" data-qz="again">再來一輪</button>
+      </div>
+      ${run.wrong.length ? `
+        <div class="rule"><h2>答錯的題目</h2><span class="count">${run.wrong.length}</span></div>
+        <div class="miss">
+          ${run.wrong.map(w => {
+            const [img, key, kind] = w.item;
+            const right = index.countries.find(c => c.key === key);
+            const pick = index.countries.find(c => c.key === w.picked);
+            return `
+              <a class="miss-c" href="#/country/${esc(right.file)}">
+                <img class="${/\.svg$/i.test(img) ? 'vec' : ''}" src="${IMG}${esc(img)}" alt="" loading="lazy">
+                <div class="miss-b">
+                  <span class="miss-k">${esc(kind)}</span>
+                  <div class="miss-r">${right.flag ? `<img class="flag" src="${IMG}${esc(right.flag)}" alt="">` : ''}<b>${esc(cname(right))}</b></div>
+                  <div class="miss-w">你選了 ${esc(pick ? cname(pick) : w.picked)}</div>
+                </div>
+              </a>`;
+          }).join('')}
+        </div>` : ''}
+    </div>`;
+}
+
+function renderRun() {
+  const el = $('#v-quiz');
+  if (!el) return;
+  if (!run) { el.innerHTML = '<p class="empty">題庫載入中…</p>'; return; }
+  if (run.i >= run.queue.length) { el.innerHTML = runResultHtml(); return; }
+
+  const [img, key, kind] = run.queue[run.i];
+  const done = run.picked !== null;
+  const right = index.countries.find(c => c.key === key);
+
+  el.innerHTML = `
+    <div class="run">
+      <div class="run-top">
+        <span class="run-step">第 <b>${run.i + 1}</b> / ${run.queue.length} 題</span>
+        <span class="run-kind">${esc(kind)}</span>
+        <span class="run-sc">答對 <b>${run.score}</b></span>
+      </div>
+      <div class="run-bar"><i style="width:${(run.i / run.queue.length) * 100}%"></i></div>
+      <div class="run-body">
+        <figure class="run-fig">
+          <img class="${/\.svg$/i.test(img) ? 'vec' : ''}" src="${IMG}${esc(img)}" alt=""
+               data-full="${IMG}${esc(img)}">
+        </figure>
+        <div class="run-side">
+          <p class="run-q">這是哪一國？</p>
+          <div class="run-opts">
+            ${run.opts.map(c => runOptHtml(c,
+              !done ? '' : c.key === key ? ' right' : c.key === run.picked ? ' miss' : ' off')).join('')}
+          </div>
+          ${done ? `
+            <div class="run-next">
+              <a class="run-go" href="#/country/${esc(right.file)}">看 ${esc(cname(right))} 的完整攻略 →</a>
+              <button type="button" data-qz="next">${run.i + 1 < run.queue.length ? '下一題' : '看結果'}</button>
+            </div>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+async function viewQuizRun() {
+  const el = $('#v-quiz');
+  el.innerHTML = '<p class="empty">題庫載入中…</p>';
+  try {
+    quizPool = quizPool || await load('quiz.json');
+  } catch {
+    el.innerHTML = '<p class="empty">讀不到題庫</p>';
+    return;
+  }
+  quizKeys = quizKeys || new Set(quizPool.map(q => q[1]));
+  startRun();
+  renderRun();
 }
 
 function heroHtml(withGuide) {
@@ -636,6 +779,10 @@ function route() {
     $('#v-clues').classList.add('on');
     $('nav a[data-nav=clues]').classList.add('on');
     viewClues();
+  } else if (seg === 'quiz') {
+    $('#v-quiz').classList.add('on');
+    $('nav a[data-nav=quiz]').classList.add('on');
+    viewQuizRun();
   } else {
     $('#v-countries').classList.add('on');
     $('nav a[data-nav=countries]').classList.add('on');
@@ -669,6 +816,26 @@ function route() {
     if (qb) {
       if (qb.dataset.quiz === 'next') pickQuiz();
       renderQuiz(qb.dataset.quiz === 'reveal');
+      return;
+    }
+
+    // 練習模式。同樣用委派，每答一題整塊就重畫一次
+    const rb = e.target.closest('[data-qz]');
+    if (rb && run) {
+      const act = rb.dataset.qz;
+      if (act === 'ans' && run.picked === null) {
+        run.picked = rb.dataset.key;
+        const right = run.queue[run.i][1];
+        if (run.picked === right) run.score++;
+        else run.wrong.push({ item: run.queue[run.i], picked: run.picked });
+      } else if (act === 'next') {
+        run.i++;
+        run.picked = null;
+        if (run.i < run.queue.length) run.opts = optionsFor(run.queue[run.i][1]);
+      } else if (act === 'again') {
+        startRun();
+      }
+      renderRun();
       return;
     }
 
