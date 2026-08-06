@@ -443,8 +443,13 @@ def load_tables():
 
 # ---------------------------------------------------------------- 組裝
 
-def _thumb_pool(gallery, limit=12):
+def _thumb_pool(gallery, tips=(), limit=12):
     """線索一覽的縮圖候選：每個國家最多一張，最多 limit 個國家。
+
+    來源有兩個，gallery 空了才換 tips：圖鑑照片（gallery）來自 geohints，
+    說明照片（tips）來自 plonkit。積雪、道路標線、護欄、街景覆蓋、語言文字這幾類
+    geohints 根本沒有對應的圖鑑分類，gallery 是空的，但 plonkit 的說明每條都帶圖——
+    只看 gallery 的話這幾種在一覽上會變成空的佔位格，而它們明明都是要看圖的線索。
 
     每國只留一張是因為候選要的是「涵蓋不同國家」，同一國連著五張對前端挑選毫無幫助
     （美國光路樁就十幾張，不擋的話候選會被單一國家佔滿）。
@@ -453,7 +458,7 @@ def _thumb_pool(gallery, limit=12):
     # SVG 照收：旗幟與轉彎標誌整類都是 SVG，排掉的話那兩種永遠沒有縮圖。
     # 去背線稿在深色底上會看不見，但前端本來就有 .vec 那套淺色底板可以套
     out, seen = [], set()
-    for g in gallery:
+    for g in (gallery or tips):
         img = g.get("image", "")
         if not img:
             continue
@@ -622,12 +627,19 @@ def main():
     (OUT / "search.json").write_text(
         json.dumps(search_idx, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
-    # 首頁「這是哪一國」的題庫。排除兩種不適合出題的：旗幟類（圖片本身就是答案）、
-    # 沒有完整攻略的國家（猜對了點進去也沒東西可看）。每國最多 6 題，且刻意輪流
-    # 從不同線索類型抽，否則 6 題會全是 Google 拍攝載具（那類圖最多）。
+    # 首頁「這是哪一國」的題庫。排除三種不適合出題的：旗幟類（圖片本身就是答案）、
+    # 沒有完整攻略的國家（猜對了點進去也沒東西可看），以及下面這幾種線索類型——
+    # 它們在攻略裡都有用，但「單獨看一張圖猜國家」是猜不出來的，出成題目只會讓人亂猜：
+    #   google_vehicles 拍攝載具、follow_cars 跟拍車：多半是模糊的車體、水花、雪地
+    #   rifts 接圖裂縫、camera 相機世代：那是相機的特徵，跟在哪一國無關
+    #   scenery 景觀、nature 植被與地貌、snow 積雪：只能縮到氣候帶，縮不到國家
+    # 判準是「這張圖裡有沒有人造物可以比對」，不是「這類線索重不重要」。
+    QUIZ_SKIP = {"flags", "google_vehicles", "follow_cars", "rifts",
+                 "camera", "scenery", "nature", "snow"}
+
     by_c = {}
     for ck, cv in clues.items():
-        if ck == "flags":
+        if ck in QUIZ_SKIP:
             continue
         for g in cv["gallery"]:
             c = g.get("country")
@@ -692,7 +704,7 @@ def main():
                 # 而且「路標」會挑到珠雞警告標誌這種很不典型的圖）。
                 # 前端再用 FREQ_ORDER 從候選裡挑常見度最高的國家——那份清單在 app.js，
                 # 不在這裡重抄一份
-                "thumbs": _thumb_pool(v.get("gallery") or []),
+                "thumbs": _thumb_pool(v.get("gallery") or [], v.get("tips") or []),
             }
             for k, v in sorted(clues.items(), key=lambda x: -(x[1]["gallery_count"] + x[1]["tip_count"]))
             if v["gallery_count"] or v["tip_count"]
