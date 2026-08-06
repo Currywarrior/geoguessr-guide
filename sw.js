@@ -1,6 +1,6 @@
 // GeoAtlas 線索圖鑑 — Service Worker（離線快取）
 // 發布新版時把版本號往上加一，瀏覽器會重新 precache 並清掉舊快取。
-const VER = 'v1';
+const VER = 'v2';
 const SHELL = `geo-shell-${VER}`;   // 程式與資料：小、可以整包留著
 const IMGS = `geo-img-${VER}`;      // 圖鑑照片：大，另開一個快取並限量
 

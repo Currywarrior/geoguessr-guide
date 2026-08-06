@@ -193,6 +193,9 @@ scripts/                      抓取與建置
   fetch_geohints_images.py      圖鑑圖片，每國每類取 5 張
   build_data.py                 合併成網站資料
   translate.py                  批次中譯
+  make_map.py                   世界地圖幾何（Natural Earth → Equal Earth 投影）
+  make_flag_colors.py           從國旗 SVG 抽配色，給國家頁的色帶用
+  make_icons.py                 PWA 圖示
 
 data/raw/                     原始抓取結果
 data/site/                    網站讀的資料
@@ -200,10 +203,35 @@ data/site/                    網站讀的資料
   countries/*.json              一國一檔
   clues/*.json                  一類線索一檔
   country_zh.json               國名中譯
+  world.json                    首頁地圖的國界路徑（make_map.py 產生）
+  flag_colors.json              各國國旗配色（make_flag_colors.py 產生）
+  confusions.json               易混淆對照（由 data/confusions.json 複製過來）
 data/translations.json        內文中譯（translate.py 產生）
+data/country_extra.json       人工補的洲別與硬線索
+data/clue_intro.json          人工寫的線索類型導言
+data/confusions.json          人工寫的易混淆國家對照
 assets/img/                   圖片
 docs/                         README 用的截圖
 ```
+
+## 介面設計語彙
+
+整站走「老地圖集圖版」這一套，加東西前先確認合不合這個調性：
+
+- **圖框 `.plate`**：四角金色 L 形角標 + 上下邊緣兩級分度刻度，純 CSS
+  （八條 `linear-gradient` 畫角、`repeating-linear-gradient` 畫刻度），不為了裝飾加空 DOM
+- **圖版編號**：首頁 `Plate I`、線索一覽 `Plate II`、易混淆 `Plate III`，
+  國家頁是圖鑑編號 `No. 033`（該國在索引裡的序號，字母序，固定不跳動）。
+  洲別與對照組的章節標題左邊也各有一個編號框
+- **配色**：底 `#11141a`、面板 `#181d25`、金 `#c9a227`。金色只用在強調與框線，
+  不做漸層、不加光暈。文字三層 `--ink` / `--dim` / `--faint`，深色底上寧可再亮一點
+- **字體**：標題 Georgia 襯線，內文系統字。站名第二行拉大字距當書名用
+- **地圖**：Equal Earth 等面積投影，經緯線壓到 13% 不透明度，左緣標緯度。
+  熱度五級都是金色的不同濃度，「只有硬線索」的國家用暗藍灰跟金色系分開
+- **動效**：進場淡入上移（容器級，`IntersectionObserver` 觸發一次就取消觀察）、
+  統計數字 rAF 跑動、地圖載入時一道金光橫掃、卡片 hover 金光斜掃。
+  開場動效只在第一次進站播（`heroPlayed`），全部包在 `prefers-reduced-motion` 裡
+- **不要**：emoji 當圖示、彩色漸層、光暈陰影、無來由的圓角
 
 ## 部署
 
@@ -237,6 +265,24 @@ challenge 頁。所以下載後一定要驗 `Content-Type` 真的是圖片才寫
 
 **兩站的國名寫法不一致**，且 geohints 有幾頁的解析會把國名切壞（含 and 的國名被拆斷、
 多區碼國家混入雜訊、年份被當成國名）。解法是拿 geohints 自己的國家清單頁當白名單校正。
+
+**世界地圖的國名比對要分層，不能攤成一張表。** Natural Earth 的每個 subunit 都帶
+`SOVEREIGNT`，亞速爾那筆的 `SOVEREIGNT` 也是 Portugal，攤平之後先到先得，
+等真正的葡萄牙來查時那塊地已經被亞速爾認領走，本土整個從地圖上消失（英國、美國、
+格陵蘭同樣中招）。`SUBUNIT` 這種精確欄位要先配完，`SOVEREIGNT` 只能當最後救援；
+而且同名可能對到多筆（阿拉斯加、夏威夷、美國本土的 `GEOUNIT` 都是
+United States of America），索引要存清單並跳過已認領的。
+
+**投影後小於一個像素的國家會整個消失。** 摩納哥、諾魯、澳門這種在 1000 寬的
+世界圖上連一個點都不到，簡化完只剩兩個點就被丟掉了。`make_map.py` 會把它們退化成
+一個小圓，前端再給一圈描邊才點得到。梵蒂岡、直布羅陀是 NE 50m 根本沒收，
+這種前端另外列一行連結，不要讓它們變成點不到的孤兒。
+
+**開發時 service worker 會一直餵舊版。** 快取是 cache-first 加 `ignoreSearch`，
+所以連 `app.js?v=34` 都會命中舊檔，改了東西怎麼重整都看不到。正解是改版時把
+`sw.js` 的 `VER` 加一；臨時要驗證就在 DevTools → Application → Service workers
+按 Unregister 再清 Cache storage。**8788 現在也被註冊過了**，跟 8765（japan-travel）、
+8781 是同一個坑。
 
 ## 版權
 

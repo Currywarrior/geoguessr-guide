@@ -13,6 +13,8 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="theme-color" content="#11141a">
+<!-- apple- 前綴那個已被標為過時，但舊版 iOS Safari 仍只認它，兩個都留 -->
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GeoAtlas">
@@ -53,6 +55,14 @@ body::after{
 }
 a{color:inherit;text-decoration:none}
 h1,h2,h3{font-family:Georgia,"Times New Roman","Noto Serif TC",serif;font-weight:600;line-height:1.3}
+/* 選取顏色也走金色，預設的藍在這個配色裡很突兀 */
+::selection{background:rgba(201,162,39,.3);color:var(--ink)}
+/* 全站捲軸配合深色底。Firefox 走 scrollbar-color，WebKit 走偽元素，兩套都寫 */
+html{scrollbar-width:thin;scrollbar-color:#39424f transparent}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#39424f;border:3px solid var(--bg);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#4b5666}
 
 /* ---------- 版首 ---------- */
 header{
@@ -88,9 +98,18 @@ nav a.on{color:var(--bg);background:var(--gold);border-color:var(--gold);font-we
   background:var(--panel2); border:1px solid var(--line); border-radius:var(--radius); display:none; z-index:30;
 }
 .results.show{display:block}
-.results a{display:block;padding:8px 12px;border-bottom:1px solid var(--line);font-size:14px}
+.results a{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 12px; border-bottom:1px solid var(--line); font-size:14px;
+}
 .results a:hover{background:var(--panel)}
-.results .k{color:var(--faint);font-size:12px;margin-left:6px}
+/* 國旗欄位固定寬度，線索類的結果沒有旗，用同寬的空白佔位讓名稱維持對齊 */
+.results .flag{
+  flex:0 0 auto; width:26px; height:18px; object-fit:contain; display:block;
+  border:1px solid var(--line); border-radius:1px; background:var(--panel2);
+}
+.results a > b{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.results .k{color:var(--faint);font-size:12px;margin-left:auto;flex:none}
 /* 內文搜尋結果：國名一行、命中的句子一行，命中的字用金色標出來 */
 .results .grp{
   padding:6px 12px; font-size:11px; letter-spacing:.12em; color:var(--gold);
@@ -112,22 +131,92 @@ main{
 .rule{display:flex;align-items:center;gap:12px;margin:34px 0 16px}
 .rule h2{font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
 .rule::after{content:"";flex:1;height:1px;background:var(--line)}
+/* 章節編號。羅馬數字裝在金框裡，跟扉頁的 Plate I 呼應 */
+.rule .rn{
+  display:grid; place-items:center; min-width:26px; height:22px; padding:0 5px;
+  font-family:Georgia,serif; font-style:normal; font-size:12px; letter-spacing:.06em;
+  color:var(--gold); border:1px solid rgba(201,162,39,.45); border-radius:2px;
+}
+
+/* 進場：捲進畫面才淡入上移，只掛在容器上。
+   .rv 是還沒進場的狀態，.in 是進場後——沒有 JS（或使用者要求減少動態）時
+   兩個 class 都不會被加上，內容一律是正常顯示，不會有東西卡在透明狀態 */
+.rv{opacity:0;transform:translateY(14px)}
+.rv.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s cubic-bezier(.2,.7,.3,1)}
+@media(prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none}
+  .map-scan{display:none}
+}
+
+/* ---------- 製圖圖框 ----------
+   老地圖集的圖版都有一圈框、四角有角標、邊緣有分度刻度。這裡把那套做成
+   可重複用的 .plate，首頁扉頁與地圖都套同一個框。
+   四角用八條 linear-gradient 畫 L 形（純 CSS、不必為了裝飾加空的 DOM），
+   刻度用 repeating-linear-gradient。全部丟在 ::before/::after 上，
+   讓 .plate 自己的 background 不被佔用 */
+.plate{position:relative;padding:22px 24px 18px}
+.plate::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  border:1px solid var(--line);
+  background:
+    linear-gradient(var(--gold) 0 0) 0 0/16px 2px no-repeat,
+    linear-gradient(var(--gold) 0 0) 0 0/2px 16px no-repeat,
+    linear-gradient(var(--gold) 0 0) 100% 0/16px 2px no-repeat,
+    linear-gradient(var(--gold) 0 0) 100% 0/2px 16px no-repeat,
+    linear-gradient(var(--gold) 0 0) 0 100%/16px 2px no-repeat,
+    linear-gradient(var(--gold) 0 0) 0 100%/2px 16px no-repeat,
+    linear-gradient(var(--gold) 0 0) 100% 100%/16px 2px no-repeat,
+    linear-gradient(var(--gold) 0 0) 100% 100%/2px 16px no-repeat;
+}
+/* 上下邊緣的分度刻度。粗刻度每 96px 一條、細刻度每 16px 一條，
+   跟背景經緯線底紋的兩級分度是同一套語彙 */
+.plate::after{
+  content:""; position:absolute; left:0; right:0; top:0; bottom:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 16px) top/100% 5px no-repeat,
+    repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 16px) bottom/100% 5px no-repeat,
+    repeating-linear-gradient(90deg,rgba(201,162,39,.5) 0 1px,transparent 1px 96px) top/100% 9px no-repeat,
+    repeating-linear-gradient(90deg,rgba(201,162,39,.5) 0 1px,transparent 1px 96px) bottom/100% 9px no-repeat;
+}
+/* 圖版編號。老地圖集每一張圖都有編號與圖名，這是最能定調的一個細節 */
+.plate-no{
+  display:flex; align-items:center; gap:12px; margin-bottom:18px;
+  font-size:11px; letter-spacing:.24em; color:var(--gold); text-transform:uppercase;
+}
+.plate-no::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.plate-no b{font-weight:600}
+.plate-no span{color:var(--faint);letter-spacing:.14em}
 
 /* ---------- 首頁開場 ---------- */
 .hero{display:grid;gap:28px;grid-template-columns:1fr 380px;align-items:stretch;margin-bottom:4px}
 /* 左欄撐滿並把統計壓到底，否則標題只有三行、右邊題目卡卻很高，下面會空一大塊 */
 .hero-l{display:flex;flex-direction:column;justify-content:space-between}
-.hero-t{font-size:38px;line-height:1.15;margin-bottom:12px}
-.hero-t em{font-style:normal;color:var(--gold)}
+/* 站名改成兩行、第二行放大並拉開字距，像地圖集封面的書名而不是一行標題 */
+.hero-t{font-size:34px;line-height:1.1;margin-bottom:14px;letter-spacing:.01em}
+.hero-t em{
+  display:block; font-style:normal; color:var(--gold);
+  font-size:52px; letter-spacing:.14em; margin-top:4px;
+}
+/* 書名下的金線：實心一段接一段虛線，收在右邊淡出，模仿製圖的分度線 */
+.hero-line{
+  height:2px; max-width:520px; margin-bottom:18px;
+  background:
+    linear-gradient(90deg,var(--gold) 0 64px,transparent 64px) no-repeat,
+    repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 12px);
+}
 .hero-s{color:var(--dim);max-width:520px;margin-bottom:22px}
-.stats{display:flex;gap:32px;flex-wrap:wrap}
+.stats{display:flex;gap:0;flex-wrap:wrap}
+/* 統計改成有分隔線的欄位，像圖例表格 */
+.stats div{padding:0 26px;border-left:1px solid var(--line)}
+.stats div:first-child{padding-left:0;border-left:0}
 .stats b{
-  display:block; font-family:Georgia,serif; font-size:30px; line-height:1.1;
-  font-variant-numeric:tabular-nums;
+  display:block; font-family:Georgia,serif; font-size:34px; line-height:1.1;
+  font-variant-numeric:tabular-nums; color:var(--ink);
 }
 .stats span{
-  display:block; font-size:12px; letter-spacing:.1em; color:var(--dim);
-  margin-top:3px;
+  display:block; font-size:11px; letter-spacing:.14em; color:var(--faint);
+  margin-top:4px;
 }
 /* 猜國家小卡：一進站就有事情可做，不是只有一整面卡片牆 */
 .quiz{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
@@ -164,7 +253,102 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 }
 .quiz-go:hover{border-color:var(--gold)}
 .quiz-load{color:var(--faint);font-size:13px;padding:44px 0;text-align:center}
-@media(max-width:820px){.hero{grid-template-columns:1fr}.hero-t{font-size:31px}}
+@media(max-width:820px){
+  .hero{grid-template-columns:1fr}
+  .hero-t{font-size:27px}
+  .hero-t em{font-size:40px;letter-spacing:.1em}
+}
+@media(max-width:720px){
+  /* 三個統計數字用 flex 會換行，第二行的第一格還會頂著一條分隔線在行首。
+     窄螢幕下固定切三欄，字縮小一點就排得下 */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr)}
+  .stats div{padding:0 8px}
+  .stats div:first-child{padding-left:0}
+  .stats b{font-size:23px}
+  .stats span{font-size:10px;letter-spacing:.06em}
+  .plate{padding:18px 14px 14px}
+}
+
+/* ---------- 世界地圖 ---------- */
+/* 用 Equal Earth 等面積投影（scripts/make_map.py 產的 data/site/world.json）。
+   不用 Mercator 是因為這張圖要當熱度圖用，Mercator 會讓格陵蘭跟俄羅斯脹到
+   跟顏色一樣搶眼，等面積投影才不會讓高緯度國家的視覺份量灌水 */
+/* 地圖現在住在扉頁的 .plate 圖框裡，不需要自己的外框，
+   只留一條上緣分隔線把它跟標題區隔開 */
+.mapwrap{position:relative;margin:26px 0 0;padding:18px 0 0;border-top:1px solid var(--line)}
+.map{position:relative}
+/* 經緯線。壓得很淡，是要讓人感覺到「這是一張投影過的地圖」，不是要看清楚格子 */
+.map-grid{fill:none;stroke:rgba(201,162,39,.13);stroke-width:.6;vector-effect:non-scaling-stroke;pointer-events:none}
+.map-mk{
+  fill:var(--faint); font-size:9px; letter-spacing:.1em; opacity:.62;
+  font-family:Georgia,serif; pointer-events:none;
+}
+/* 載入時一道金光由左掃到右，掃完就停。這是整站唯一一個「開機」式的動效，
+   放在第一屏一次就好，多了會很吵 */
+/* 用 background-position 而不是 transform 移動光帶：
+   transform 會把絕對定位的元素整個推到容器外，撐出一條 2331px 的橫向捲軸
+   （父層沒有 overflow:hidden，而地圖在手機上要能橫向捲，不能隨便關掉） */
+.map-scan{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:linear-gradient(90deg,transparent 0%,rgba(201,162,39,.14) 42%,rgba(201,162,39,.22) 50%,rgba(201,162,39,.14) 58%,transparent 100%);
+  background-size:55% 100%;
+  background-repeat:no-repeat;
+  background-position:-60% 0;
+  animation:scan 1.5s cubic-bezier(.4,0,.2,1) .25s both;
+}
+@keyframes scan{to{background-position:170% 0}}
+.mapwrap svg{display:block;width:100%;height:auto;overflow:visible}
+/* 描邊用 non-scaling-stroke，否則 SVG 被縮放後國界會跟著變成粗黑線 */
+.mapwrap path{stroke:var(--bg);stroke-width:.5;vector-effect:non-scaling-stroke}
+.map-land{fill:#242b36;pointer-events:none}
+/* 五級熱度。m0 是只有硬線索的國家，仍可點但要看得出跟有攻略的不同。
+   fill 與 background 兩個都寫：地圖上是 path 只吃 fill，圖例是 i 只吃 background，
+   同一條規則兩邊共用，改深淺時不會只改到一邊 */
+/* m0 壓得比原本暗、也少一點藍：非洲跟中亞有一大片國家沒有攻略，
+   顏色一亮就整片藍灰跟金色搶版面，反而看不出熱度分佈 */
+.m0{fill:#2b333f;background:#2b333f}
+.m1{fill:rgba(201,162,39,.24);background:rgba(201,162,39,.24)}
+.m2{fill:rgba(201,162,39,.45);background:rgba(201,162,39,.45)}
+.m3{fill:rgba(201,162,39,.68);background:rgba(201,162,39,.68)}
+.m4{fill:rgba(201,162,39,.95);background:rgba(201,162,39,.95)}
+.mapwrap path[data-f]{cursor:pointer}
+.mapwrap path[data-f]:hover,.mapwrap path.sel{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+/* 投影後不足一個像素的國家（摩納哥、諾魯、澳門）在 world.json 裡是個小圓點，
+   給它一圈描邊才點得到，不然滑鼠得剛好落在兩三個像素上 */
+.mapwrap path[data-dot]{stroke:rgba(201,162,39,.32);stroke-width:1.8}
+.map-tip{
+  position:absolute; z-index:10; pointer-events:none; display:none;
+  align-items:center; gap:9px; padding:7px 11px; white-space:nowrap;
+  background:var(--panel2); border:1px solid var(--gold); border-radius:var(--radius);
+  box-shadow:0 6px 20px rgba(0,0,0,.45);
+}
+.map-tip.on{display:flex}
+.map-tip img{width:28px;height:19px;object-fit:contain;border:1px solid var(--line);border-radius:2px}
+.map-tip b{font-size:15px}
+.map-tip span{font-size:12px;color:var(--faint);display:block;margin-top:-3px}
+.map-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.map-bar h2{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.map-sw{display:flex;gap:2px;margin-left:auto}
+.map-sw button{
+  padding:5px 12px; font:inherit; font-size:12px; cursor:pointer; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:var(--radius);
+}
+.map-sw button:hover{color:var(--ink)}
+.map-sw button.on{color:var(--bg);background:var(--gold);border-color:var(--gold);font-weight:600}
+.map-key{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--faint);letter-spacing:.08em}
+.map-key i{width:22px;height:9px;display:block;border:1px solid var(--line)}
+.map-foot{margin-top:6px;font-size:12px;color:var(--faint);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.map-foot a{color:var(--dim);border-bottom:1px dotted var(--line)}
+.map-foot a:hover{color:var(--gold)}
+@media(max-width:720px){
+  .mapwrap{padding:10px 8px 6px}
+  .map-sw{margin-left:0;width:100%}
+  .map-sw button{flex:1}
+  /* 手機寬度下等比縮放後整張圖只剩 175px 高，連法國都只有指甲大小。
+     給一個最小寬度改成左右滑動看，寧可捲也不要縮到點不到 */
+  .map{overflow-x:auto}
+  .mapwrap svg{min-width:620px}
+}
 
 /* ---------- 練習模式 ---------- */
 /* 首頁那張小卡是閃卡，這一頁才是測驗：四選一、計分、結束列出答錯的題目 */
@@ -222,6 +406,40 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
   color:var(--bg); background:var(--gold); border:1px solid var(--gold); border-radius:var(--radius);
 }
 .run-again:hover{background:#dcb43a}
+/* 跨輪累計的紀錄（存在 localStorage）。原本練完一輪分數就消失，
+   沒有任何東西會累積，等於每次都重新開始 */
+.run-rec{
+  display:inline-block; margin-bottom:10px; padding:3px 12px;
+  font-size:12px; letter-spacing:.14em; font-weight:600;
+  color:var(--bg); background:var(--gold); border-radius:2px;
+}
+.run-hist{display:flex;justify-content:center;gap:34px;flex-wrap:wrap;margin-bottom:22px}
+.run-hist b{
+  display:block; font-family:Georgia,serif; font-size:24px; line-height:1.2;
+  font-variant-numeric:tabular-nums;
+}
+.run-hist span{display:block;font-size:11px;letter-spacing:.1em;color:var(--faint);margin-top:2px}
+/* 進行中的連對。三題以上才顯示，一開始就掛著一個 0 沒有意義 */
+.run-streak{
+  font-size:12px; letter-spacing:.08em; padding:2px 9px; border-radius:2px;
+  color:var(--gold); border:1px solid var(--gold);
+}
+.weak{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.weak-c{
+  display:flex; align-items:center; gap:10px; padding:8px 11px;
+  background:var(--panel); border:1px solid var(--line);
+  border-left:2px solid var(--rust); border-radius:var(--radius);
+}
+.weak-c:hover{border-color:var(--gold);border-left-color:var(--gold)}
+.weak-c .flag{width:30px;height:21px;object-fit:contain;border:1px solid var(--line);border-radius:2px;flex:none}
+.weak-c b{font-size:15px;font-weight:600}
+.weak-c i{margin-left:auto;font-style:normal;font-size:12px;color:var(--faint);white-space:nowrap}
+.run-reset{margin-top:30px;font-size:12px;color:var(--faint);text-align:center}
+.run-reset button{
+  font:inherit; font-size:12px; cursor:pointer; margin-left:6px; padding:2px 10px;
+  color:var(--faint); background:transparent; border:1px solid var(--line); border-radius:var(--radius);
+}
+.run-reset button:hover{color:var(--rust);border-color:var(--rust)}
 /* 答錯的題目：把圖、正解、你選的錯答放在一起，才知道自己是把誰認成誰 */
 .miss{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
 .miss-c{
@@ -243,11 +461,24 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 /* ---------- 卡片網格 ---------- */
 .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(216px,1fr))}
 .card{
-  display:block; padding:14px 16px; background:var(--panel);
-  border:1px solid var(--line); border-radius:var(--radius);
-  border-left:2px solid var(--line); transition:border-color .12s,background .12s;
+  position:relative; display:block; padding:14px 16px; background:var(--panel);
+  border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+  border-left:2px solid var(--line);
+  transition:border-color .12s,background .12s,transform .12s;
 }
-.card:hover{background:var(--panel2);border-left-color:var(--gold)}
+.card:hover{background:var(--panel2);border-left-color:var(--gold);transform:translateY(-1px)}
+/* hover 時一道金光橫掃過卡片。只有一層 ::after 加一次 transform，
+   258 張卡同時掛動畫也不會卡——實際上一次只會有一張在 hover */
+.card::after{
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:0;
+  background:linear-gradient(105deg,transparent 30%,rgba(201,162,39,.14) 50%,transparent 70%);
+  transform:translateX(-60%);
+}
+.card:hover::after{opacity:1;transform:translateX(60%);transition:transform .55s ease,opacity .2s}
+@media(prefers-reduced-motion:reduce){
+  .card,.card:hover{transform:none}
+  .card::after{display:none}
+}
 .card .nm{font-size:17px;margin-bottom:3px}
 .card.thin{opacity:.75}
 .card.thin:hover{opacity:1}
@@ -266,7 +497,13 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 .page-head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:6px}
 .back{font-size:13px;color:var(--faint)}
 .back:hover{color:var(--gold)}
-.page-head h1{font-size:30px;margin:8px 0 4px}
+.page-head h1{font-size:30px;margin:8px 0 4px;display:flex;align-items:center;gap:12px}
+.page-head h1 .flag{width:46px;height:32px;object-fit:contain;border:1px solid var(--line);border-radius:2px;flex:none}
+/* 國旗配色帶（data/site/flag_colors.json）。258 個國家頁的版型一模一樣，
+   翻到哪一國本來只能靠標題那行字認；頂上這條色帶讓每一頁有自己的身分，
+   而且顏色是從該國國旗抽出來的，不是隨機配色 */
+.band{display:flex;height:5px;margin-bottom:14px;border-radius:2px;overflow:hidden}
+.band i{flex:1;display:block}
 .page-head .sub{color:var(--faint);font-size:13px;letter-spacing:.06em}
 
 /* 速查欄 */
@@ -344,6 +581,25 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 .intro p:last-child{margin-bottom:0}
 /* 線索卡片上的一句話摘要 */
 .clue-card .cl{font-size:13px;color:var(--dim);margin-top:2px;line-height:1.5}
+/* 線索一覽改成帶縮圖的圖鑑卡。這頁要比對的東西本來就是用看的，
+   原本整頁都是文字方塊，得逐格讀字才知道哪一類是什麼 */
+.grid-clue{grid-template-columns:repeat(auto-fill,minmax(238px,1fr))}
+.clue-card{padding:0}
+.clue-card .cb{padding:12px 14px 14px}
+.cth{
+  width:100%; aspect-ratio:16/10; object-fit:cover; display:block;
+  border-bottom:1px solid var(--line); transition:transform .45s ease;
+}
+.clue-card:hover .cth{transform:scale(1.045)}
+/* 沒有縮圖的那 12 種是硬線索（行車方向、電話區碼、貨幣、網域），
+   它們本來就不是用看的而是用查的。給斜線紋佔位而不是硬塞一張圖，
+   一方面讓同一列的卡片等高，一方面這個差別本身就是有用的資訊 */
+.clue-card:not(.has-thumb)::before{
+  content:""; display:block; aspect-ratio:16/10; border-bottom:1px solid var(--line);
+  background:repeating-linear-gradient(45deg,
+    rgba(120,140,170,.06) 0 6px, transparent 6px 12px), var(--panel2);
+}
+@media(prefers-reduced-motion:reduce){.clue-card:hover .cth{transform:none}}
 
 /* ---------- 線索頁的跳轉側欄 ---------- */
 /* 版首是 sticky 的，跳過去時要留出它的高度，否則國名會被蓋住 */
@@ -443,15 +699,61 @@ img.vec{object-fit:contain !important;background:#e6e2d8 !important;padding:12px
 /* 說明列存在時，徽章要讓開，不要壓在字上 */
 .shot:has(.cap) .shot-go{bottom:auto;top:7px}
 
+/* ---------- 易混淆對照 ---------- */
+/* 並排欄位。auto-fit 讓兩國一組時各佔一半、三國一組時各佔三分之一，
+   不必替不同組數各寫一套版面 */
+.vs{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+/* 每欄撐成一樣高，硬資料靠 margin-top:auto 壓在最底下。
+   不這樣做的話，辨識重點兩行的國家跟三行的國家，下面的行車方向會差一行高度，
+   橫著比的時候得上下找，對照頁最重要的就是同一列能對齊 */
+.vs-c{
+  display:flex; flex-direction:column;
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:var(--radius); overflow:hidden;
+}
+.vs-h{
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  border-bottom:1px solid var(--line); border-left:2px solid var(--gold);
+}
+.vs-h .flag{width:34px;height:24px;object-fit:contain;border:1px solid var(--line);border-radius:2px;flex:none}
+.vs-h b{font-size:17px}
+.vs-h i{margin-left:auto;font-style:normal;font-size:12px;color:var(--faint)}
+.vs-h:hover i{color:var(--gold)}
+/* 同一組的照片高度要一致，否則三欄各自長短不一，眼睛沒辦法橫著比 */
+.vs-shots{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px}
+.vs-shots .shot img{aspect-ratio:4/3;object-fit:cover;width:100%;display:block}
+.vs-tell{padding:11px 13px;color:var(--dim);font-size:14px;line-height:1.75}
+.vs-facts{
+  display:grid; grid-template-columns:auto 1fr; gap:4px 12px; margin-top:auto;
+  padding:0 13px 13px; font-size:13px; align-items:baseline;
+}
+.vs-facts dt{color:var(--faint);font-size:12px;letter-spacing:.06em;white-space:nowrap}
+.vs-facts dd{color:var(--ink)}
+.vs-na{color:var(--faint)}
+.vs-note{margin-top:10px;font-size:12px;color:var(--faint)}
+.vs-note a{color:var(--dim);border-bottom:1px dotted var(--line)}
+.vs-note a:hover{color:var(--gold)}
+
 .empty{color:var(--faint);padding:30px 0;text-align:center}
 
+/* 頁尾用跟圖框同一套分度刻度收尾，讓整頁像一張有上下框線的圖版 */
 footer{
   position:relative; z-index:1; border-top:1px solid var(--line);
-  margin-top:50px; padding:20px; text-align:center;
+  margin-top:60px; padding:26px 20px 22px; text-align:center;
   color:var(--faint); font-size:13px;
 }
+footer::before{
+  content:""; position:absolute; left:0; right:0; top:0; height:6px;
+  background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 16px);
+}
+footer p{max-width:640px;margin:0 auto}
 footer a{color:var(--dim);border-bottom:1px solid var(--line)}
 footer a:hover{color:var(--gold)}
+/* 收尾的一行小字，字距拉開當版權標記 */
+footer .mark{
+  margin-top:12px; font-size:10px; letter-spacing:.3em;
+  color:rgba(170,179,194,.5); text-transform:uppercase;
+}
 .count{color:var(--faint);font-size:13px;font-variant-numeric:tabular-nums}
 
 /* 燈箱：看細節用，圖鑑照片縮圖看不出電線桿紋路 */
@@ -479,6 +781,7 @@ footer a:hover{color:var(--gold)}
     <nav>
       <a href="#/" data-nav="countries">按國家</a>
       <a href="#/clues" data-nav="clues">按線索</a>
+      <a href="#/vs" data-nav="vs">易混淆</a>
       <a href="#/quiz" data-nav="quiz">練習</a>
     </nav>
     <div class="search">
@@ -493,6 +796,7 @@ footer a:hover{color:var(--gold)}
   <section class="view" id="v-clues"></section>
   <section class="view" id="v-country"></section>
   <section class="view" id="v-clue"></section>
+  <section class="view" id="v-vs"></section>
   <section class="view" id="v-quiz"></section>
 </main>
 
@@ -501,15 +805,19 @@ footer a:hover{color:var(--gold)}
     <a href="https://www.plonkit.net/" target="_blank" rel="noopener">Plonk It</a> 與
     <a href="https://geohints.com/" target="_blank" rel="noopener">GeoHints</a>，
     著作權屬各原作者，請支持原站。</p>
+  <p class="mark">Geoatlas · Atlas of Visual Clues</p>
 </footer>
 
 <div id="lb"><span class="x">&times;</span><img alt=""></div>
 
-<script src="app.js?v=29"></script>
+<script src="app.js?v=44"></script>
 <script>
 // 註冊 Service Worker，讓這站可以裝到手機桌面並離線瀏覽。
 // file:// 直接開的時候沒有 serviceWorker 可用，包起來免得整頁報錯。
-if ('serviceWorker' in navigator) {
+// 本機開發不註冊：sw.js 是 cache-first 又 ignoreSearch，連 app.js?v=44 都會命中舊檔，
+// 改了東西怎麼重整都看不到（這個坑踩過很多次）。要在本機驗 PWA 行為就暫時拿掉這個條件。
+const DEV = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+if ('serviceWorker' in navigator && !DEV) {
   addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }
 </script>

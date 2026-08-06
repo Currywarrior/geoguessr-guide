@@ -443,6 +443,40 @@ def load_tables():
 
 # ---------------------------------------------------------------- 組裝
 
+def _thumb_pool(gallery, limit=12):
+    """線索一覽的縮圖候選：每個國家最多一張，最多 limit 個國家。
+
+    每國只留一張是因為候選要的是「涵蓋不同國家」，同一國連著五張對前端挑選毫無幫助
+    （美國光路樁就十幾張，不擋的話候選會被單一國家佔滿）。
+    SVG 跳過——那些是品牌 logo，去背線稿當縮圖在深色底上等於一片空白。
+    """
+    # SVG 照收：旗幟與轉彎標誌整類都是 SVG，排掉的話那兩種永遠沒有縮圖。
+    # 去背線稿在深色底上會看不見，但前端本來就有 .vec 那套淺色底板可以套
+    out, seen = [], set()
+    for g in gallery:
+        img = g.get("image", "")
+        if not img:
+            continue
+        # 公路編號、公車站、路名牌這幾類的 country 是空字串——那批圖鑑條目是跨國通用的，
+        # 本來就沒有掛到特定國家。不能因此把它們整個排除掉（會少五種線索沒有縮圖），
+        # 沒有國家歸屬就不做去重，照原順序收
+        country = g.get("country") or ""
+        if country and country in seen:
+            continue
+        if country:
+            seen.add(country)
+        out.append([img, country])
+
+    # 收完之後均勻取樣，不是取前 limit 個。gallery 是照國名字母序排的，
+    # 直接砍前 12 個等於候選裡只有 b、e、g、k 開頭那幾個非洲國家，
+    # 前端想挑「常見國家」也挑不到（美國、日本、巴西全被切在後面）。
+    # 均勻取樣才會從 A 到 Z 都撈得到
+    if len(out) <= limit:
+        return out
+    step = len(out) / limit
+    return [out[int(i * step)] for i in range(limit)]
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -550,6 +584,23 @@ def main():
         (kdir / f"{key}.json").write_text(
             json.dumps(v, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
+    # 易混淆國家對照（data/confusions.json，人工維護）。這裡只是搬過去給前端讀，
+    # 但順手擋兩種會讓頁面開天窗的錯誤：國家 file 打錯、以及指定的線索類型
+    # 有某一國沒有圖（那一欄會變成空白，看起來像壞掉）
+    conf_src = ROOT / "data" / "confusions.json"
+    if conf_src.exists():
+        conf = json.loads(conf_src.read_text(encoding="utf-8"))
+        by_file = {k.replace(" ", "-"): v for k, v in countries.items()}
+        for g in conf.get("groups", []):
+            for m in g.get("members", []):
+                c = by_file.get(m["file"])
+                if not c:
+                    print(f"注意：對照組 {g['id']} 的 {m['file']} 找不到對應國家")
+                elif g.get("clue") and g["clue"] not in (c.get("gallery") or {}):
+                    print(f"注意：對照組 {g['id']} 的 {m['file']} 沒有 {g['clue']} 的圖")
+        (OUT / "confusions.json").write_text(
+            json.dumps(conf, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
     # 內文全文搜尋的索引。每條說明一筆 [國家key, 純文字]，1MB 左右，
     # 前端只在第一次搜尋時載入。連結只留顯示文字、粗體與斜體標記拿掉，
     # 網址對搜尋沒有用處又佔掉一成體積，留著還會讓 goo.gl 這種字串誤中。
@@ -634,6 +685,14 @@ def main():
                 "gallery": v["gallery_count"],
                 "tips": v["tip_count"],
                 "lead": (v.get("intro") or {}).get("lead", ""),
+                # 線索一覽的代表縮圖候選。沒有圖的話那一覽整頁都是文字方塊，
+                # 而這站要比對的東西本來就是用看的。
+                # 這裡給的是候選清單不是單一張：gallery 是照國名字母序排的，
+                # 直接取第一張會讓 21 種線索全部都是波札那的照片（整頁一樣的沙漠色，
+                # 而且「路標」會挑到珠雞警告標誌這種很不典型的圖）。
+                # 前端再用 FREQ_ORDER 從候選裡挑常見度最高的國家——那份清單在 app.js，
+                # 不在這裡重抄一份
+                "thumbs": _thumb_pool(v.get("gallery") or []),
             }
             for k, v in sorted(clues.items(), key=lambda x: -(x[1]["gallery_count"] + x[1]["tip_count"]))
             if v["gallery_count"] or v["tip_count"]

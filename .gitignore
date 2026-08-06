@@ -7,6 +7,10 @@ __pycache__/
 *.log
 data/raw/*.log
 
+# Natural Earth 的原始國界檔（3.3MB）。跟其他 data/raw 不同，這不是自己爬來的，
+# 是第三方的公開資料，make_map.py 找不到就會自己重新下載，沒必要佔 Pages 的容量
+data/raw/ne_50m_map_subunits.geojson
+
 # 早期未分檔的舊產物，已被 data/site/countries/ 與 clues/ 取代
 data/site/countries.json
 data/site/clues.json
